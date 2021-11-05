@@ -1,12 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter_src/user_info_ui.dart';
+
+import 'map_ui.dart';
+import 'news.dart';
+import 'user_info_ui.dart';
 
 void main() => runApp(const MyApp());
 
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     const appName = 'BIT Map';
@@ -18,64 +22,55 @@ class MyApp extends StatelessWidget {
         colorScheme:
             ColorScheme.fromSwatch().copyWith(secondary: Colors.yellow),
       ),
-      home: HomePage(title: appName),
+      home: const Pages(title: appName),
     );
   }
 }
 
-class HomePage extends StatefulWidget {
+class Pages extends StatefulWidget {
   final String title;
 
-  const HomePage({Key? key, required this.title}) : super(key: key);
+  const Pages({Key? key, required this.title}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
-    return _HomePage();
+    return _Pages();
   }
 }
 
-class _HomePage extends State<HomePage> {
-  int _counter = 0;
+class _Pages extends State<Pages> {
+  int _selectedItem = 0; // 当前选中的面板编号
+  final List<Widget> _page = <Widget> [MapUI(), News(), UserInfo()]; // 面板
+
+  Widget _getUI() {
+    // 获得当前选中的面板
+    return _page[_selectedItem];
+  }
 
   @override
   Widget build(BuildContext context) {
+    // 主页面脚手架的搭建，包含顶栏和底部的面板导航栏
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
         backgroundColor: Theme.of(context).primaryColor,
       ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text('with background',
-              style: Theme.of(context).textTheme.caption),
-            Text('$_counter time clicked', style: Theme.of(context).textTheme.caption)
-          ],
-      )),
+      body: _getUI(),
+      // 导航栏
       bottomNavigationBar: BottomNavigationBar(
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(icon: Icon(Icons.map), label: '地图'),
           BottomNavigationBarItem(icon: Icon(Icons.art_track), label: '动态'),
           BottomNavigationBarItem(icon: Icon(Icons.account_circle), label: '个人信息')
-
         ],
+        currentIndex: _selectedItem,
+        onTap: (int index) {
+          setState(() {
+            // 切换到对应的面板
+            _selectedItem = index;
+          });
+        },
       ),
-      floatingActionButton: Theme(
-          data: Theme.of(context).copyWith(
-              colorScheme:
-                  ColorScheme.fromSwatch().copyWith(secondary: Colors.grey)),
-          child: FloatingActionButton(
-              onPressed: _inc,
-              tooltip: 'Increment',
-              child: const Icon(Icons.computer))),
     );
-  }
-
-  void _inc() {
-    setState(() {
-      // 设置计数器变量
-      _counter++;
-    });
   }
 }
