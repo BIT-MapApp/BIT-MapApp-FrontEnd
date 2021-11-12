@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 
 class MapUI extends StatefulWidget {
+  const MapUI({Key? key}) : super(key: key);
+
   @override
   State<StatefulWidget> createState() {
     return _mapUI();

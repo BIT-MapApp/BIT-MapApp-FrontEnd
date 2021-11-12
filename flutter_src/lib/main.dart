@@ -5,6 +5,7 @@ import 'package:flutter_src/user_info_ui.dart';
 import 'map_ui.dart';
 import 'news.dart';
 import 'user_info_ui.dart';
+import 'global.dart';
 
 void main() => runApp(const MyApp());
 
@@ -41,6 +42,12 @@ class Pages extends StatefulWidget {
 class _Pages extends State<Pages> {
   int _selectedItem = 0; // 当前选中的面板编号
   final List<Widget> _page = <Widget> [MapUI(), News(), UserInfo()]; // 面板
+
+  @override
+  void initState() {
+    if (Global.debugMode) _selectedItem = 2;
+    super.initState();
+  }
 
   Widget _getUI() {
     // 获得当前选中的面板

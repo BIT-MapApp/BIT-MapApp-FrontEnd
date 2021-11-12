@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 
 class News extends StatefulWidget {
+  const News({Key? key}) : super(key: key);
+
   @override
   State<StatefulWidget> createState() {
     return _News();
