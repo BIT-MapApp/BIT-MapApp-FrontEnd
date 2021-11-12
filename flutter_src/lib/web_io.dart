@@ -5,12 +5,12 @@ import 'package:dio/dio.dart';
 import 'package:dio/adapter.dart';
 import 'package:flutter/material.dart';
 
-// class Web {
-//   static Dio dio = Dio(BaseOptions(
-//     baseUrl: 'localhost',
-//     headers: {
-//     },
-//   ));
+class Web {
+  static Dio dio = Dio(BaseOptions(
+    baseUrl: 'localhost',
+    headers: {
+    },
+  ));
 //
 //   static void init() {
 // // 添加缓存插件
@@ -51,4 +51,4 @@ import 'package:flutter/material.dart';
 //     Global.profile.token = basic;
 //     return User.fromJson(r.data);
 //   }
-// }
+}

@@ -35,6 +35,8 @@ class _UserInfo extends State<UserInfo> {
         child: Padding(
       padding: const EdgeInsets.all(16.0),
       child: Form(
+        key: _formKey,
+        // autovalidateMode: AutovalidateMode.onUserInteraction,
         child: Column(
           children: [
             TextFormField(
@@ -51,7 +53,7 @@ class _UserInfo extends State<UserInfo> {
               controller: _pwdField,
               decoration: InputDecoration(
                   labelText: '密码',
-                  prefixIcon: Icon(Icons.lock),
+                  prefixIcon: const Icon(Icons.lock),
                   suffixIcon: IconButton(
                       onPressed: () {
                         setState(() {
@@ -69,9 +71,9 @@ class _UserInfo extends State<UserInfo> {
             Padding(
               padding: const EdgeInsets.only(top: 30.0),
               child: ConstrainedBox(
-                constraints: const BoxConstraints.expand(height: 30.0),
+                constraints: const BoxConstraints.expand(height: 45.0),
                 child: ElevatedButton(
-                  onPressed: () {},
+                  onPressed: _tryLogin,
                   style: ElevatedButton.styleFrom(
                       primary: Theme.of(context).primaryColor),
                   child: const Text("Log In"),
@@ -82,5 +84,10 @@ class _UserInfo extends State<UserInfo> {
         ),
       ),
     ));
+  }
+
+  void _tryLogin() async {
+    if (!(_formKey.currentState as FormState).validate()) return;
+    print(_usernameField.text + " " + _pwdField.text);
   }
 }
