@@ -27,6 +27,9 @@ environment:
 # the latest version available on pub.dev. To see which dependencies have newer
 # versions available, run `flutter pub outdated`.
 dependencies:
+  flutter_baidu_mapapi_map: ^3.0.0+2
+  flutter_baidu_mapapi_search: ^3.0.0
+  flutter_baidu_mapapi_utils: ^3.0.0
   json_annotation: ^3.0.1
   dio: ^4.0.1
   flutter:

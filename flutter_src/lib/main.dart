@@ -1,13 +1,30 @@
+import 'dart:io' show Platform;
+
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_src/user_info_ui.dart';
+import 'package:flutter_baidu_mapapi_map/flutter_baidu_mapapi_map.dart';
+import 'package:flutter_baidu_mapapi_base/flutter_baidu_mapapi_base.dart';
+import 'package:flutter_baidu_mapapi_search/flutter_baidu_mapapi_search.dart';
 
 import 'map_ui.dart';
 import 'news.dart';
 import 'user_info_ui.dart';
 import 'global.dart';
 
-void main() => runApp(const MyApp());
+// void main() => runApp(const MyApp());
+void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  if (Platform.isIOS) {
+    BMFMapSDK.setApiKeyAndCoordType('none', BMF_COORD_TYPE.BD09LL);
+  } else if (Platform.isAndroid) {
+// Android 目前不支持接口设置Apikey,
+// 请在主工程的Manifest文件里设置，详细配置方法请参考[https://lbs.baidu.com/ 官网][https://lbs.baidu.com/)demo
+    BMFMapSDK.setCoordType(BMF_COORD_TYPE.BD09LL);
+  }
+  runApp(const MyApp());
+}
 
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
@@ -41,7 +58,7 @@ class Pages extends StatefulWidget {
 
 class _Pages extends State<Pages> {
   int _selectedItem = 0; // 当前选中的面板编号
-  final List<Widget> _page = <Widget> [MapUI(), News(), UserInfo()]; // 面板
+  final List<Widget> _page = <Widget>[MapUI(), News(), UserInfo()]; // 面板
 
   @override
   void initState() {
@@ -68,7 +85,8 @@ class _Pages extends State<Pages> {
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(icon: Icon(Icons.map), label: '地图'),
           BottomNavigationBarItem(icon: Icon(Icons.art_track), label: '动态'),
-          BottomNavigationBarItem(icon: Icon(Icons.account_circle), label: '个人信息')
+          BottomNavigationBarItem(
+              icon: Icon(Icons.account_circle), label: '个人信息')
         ],
         currentIndex: _selectedItem,
         onTap: (int index) {
