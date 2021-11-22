@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'global.dart';
@@ -20,6 +23,8 @@ class _UserInfo extends State<UserInfo> {
   final TextEditingController _usernameField = TextEditingController();
   final TextEditingController _pwdField = TextEditingController();
 
+  String loginResponse = "No response yet";
+
   @override
   void initState() {
     if (Global.lastLogin != null) {
@@ -39,6 +44,9 @@ class _UserInfo extends State<UserInfo> {
         // autovalidateMode: AutovalidateMode.onUserInteraction,
         child: Column(
           children: [
+            Text(
+              loginResponse
+            ),
             TextFormField(
               autofocus: _nameAutoFocus,
               controller: _usernameField,
@@ -89,5 +97,15 @@ class _UserInfo extends State<UserInfo> {
   void _tryLogin() async {
     if (!(_formKey.currentState as FormState).validate()) return;
     print(_usernameField.text + " " + _pwdField.text);
+    Dio dio = Dio();
+    Map<String, dynamic> mmap = Map();
+    mmap["user"] = _usernameField.text;
+    String url = Global.url + "/queryNickname";
+    print(url);
+    Response resp = await dio.post(url, data: mmap);
+    setState(() {
+      loginResponse = resp.data.toString();
+    });
+    print(loginResponse);
   }
 }
