@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter_src/trend/brief.dart';
 
 class News extends StatefulWidget {
   const News({Key? key}) : super(key: key);
@@ -14,13 +15,30 @@ class News extends StatefulWidget {
 class _News extends State<News> {
   @override
   Widget build(BuildContext context) {
+    const double _imageSize = 50;
     return Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Text('with background',
-                style: Theme.of(context).textTheme.caption),
-            Text('News selected', style: Theme.of(context).textTheme.caption)
+            BriefUI(
+              name: "wuzirui",
+              content: "Content " * 20,
+              images: [
+                Container( width: _imageSize, height: _imageSize, color: Colors.red, ),
+                Container( width: _imageSize, height: _imageSize, color: Colors.blue, ),
+                Container( width: _imageSize, height: _imageSize, color: Colors.green, ),
+                Container( width: _imageSize, height: _imageSize, color: Colors.yellow, ),
+                Container( width: _imageSize, height: _imageSize, color: Colors.purple, ),
+                Container( width: _imageSize, height: _imageSize, color: Colors.cyan, ),
+                Container( width: _imageSize, height: _imageSize, color: Colors.red, ),
+                Container( width: _imageSize, height: _imageSize, color: Colors.blue, ),
+                Container( width: _imageSize, height: _imageSize, color: Colors.green, ),
+                Container( width: _imageSize, height: _imageSize, color: Colors.yellow, ),
+                Container( width: _imageSize, height: _imageSize, color: Colors.purple, ),
+                Container( width: _imageSize, height: _imageSize, color: Colors.cyan, ),
+              ],
+            ),
+
           ],
         ));
   }

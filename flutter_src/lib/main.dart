@@ -31,7 +31,7 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const appName = 'BIT Map';
+    const appName = '首都高校校景地图';
     return MaterialApp(
       title: appName,
       theme: ThemeData(

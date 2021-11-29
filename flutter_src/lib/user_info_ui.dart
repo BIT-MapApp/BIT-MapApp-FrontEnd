@@ -18,7 +18,6 @@ class UserInfo extends StatefulWidget {
 class _UserInfo extends State<UserInfo> {
   bool _showPassword = false;
   GlobalKey _formKey = GlobalKey<FormState>();
-  bool _nameAutoFocus = true;
 
   final TextEditingController _usernameField = TextEditingController();
   final TextEditingController _pwdField = TextEditingController();
@@ -28,7 +27,6 @@ class _UserInfo extends State<UserInfo> {
   @override
   void initState() {
     if (Global.lastLogin != null) {
-      _nameAutoFocus = false;
       _usernameField.text = Global.lastLogin!;
     }
     super.initState();
@@ -41,14 +39,13 @@ class _UserInfo extends State<UserInfo> {
       padding: const EdgeInsets.all(16.0),
       child: Form(
         key: _formKey,
-        // autovalidateMode: AutovalidateMode.onUserInteraction,
         child: Column(
           children: [
             Text(
               loginResponse
             ),
             TextFormField(
-              autofocus: _nameAutoFocus,
+              autofocus: false,
               controller: _usernameField,
               decoration: const InputDecoration(
                   labelText: '用户名', prefixIcon: Icon(Icons.person)),
@@ -57,7 +54,7 @@ class _UserInfo extends State<UserInfo> {
               },
             ),
             TextFormField(
-              autofocus: !_nameAutoFocus,
+              autofocus: false,
               controller: _pwdField,
               decoration: InputDecoration(
                   labelText: '密码',
