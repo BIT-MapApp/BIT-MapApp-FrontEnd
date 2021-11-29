@@ -50,10 +50,13 @@ class _BriefUIState extends State<BriefUI> {
   Widget galleryListBuilder() =>
     ListView.builder(
       itemBuilder: (context, i) {
-        return widget.images[i];
+        if (i % 2 == 0) {
+          return widget.images[i ~/ 2];
+        }
+        return const SizedBox( width: 5, );
       },
       scrollDirection: Axis.horizontal,
-      itemCount: widget.images.length,
+      itemCount: widget.images.length * 2,
     );
 
   Widget getBody() {
