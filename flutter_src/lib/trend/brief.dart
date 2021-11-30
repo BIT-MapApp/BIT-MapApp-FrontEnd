@@ -37,7 +37,7 @@ class _BriefUIState extends State<BriefUI> {
     Expanded( child: Text( // content of the brief
       widget.content,
       maxLines: 2,
-      style: TextStyle(fontSize: 14, decoration: TextDecoration.none),
+      style: const TextStyle(fontSize: 14, decoration: TextDecoration.none),
       overflow: TextOverflow.ellipsis,
     ));
 
@@ -82,49 +82,6 @@ class _BriefUIState extends State<BriefUI> {
             ], ),
         ),
       ),
-    );
-
-    return Column(
-      children: [
-        Container(
-          child: getAvatar(),
-          color: Colors.black,
-        ),
-        Column(
-          children: [
-            Container(
-              child: Text(
-                widget.name,
-              ),
-              color: Colors.red,
-            ),
-            Expanded(
-              child: Container(
-                child: Text(
-                  "Test" * 50,
-                  overflow: TextOverflow.ellipsis,
-                  maxLines: 1,
-                ),
-                color: Colors.blue,
-              ),
-            )
-            //     Padding(
-            //       padding: const EdgeInsets.all(8.0),
-            //     ),
-            //     Expanded(
-            //       child: Text(
-            //         "Content " * 20,
-            //         overflow: TextOverflow.ellipsis,
-            //         maxLines: 1,
-            //         style: const TextStyle(
-            //           fontSize: 14,
-            //           decoration: TextDecoration.none,
-            //         ),
-            //       ),
-            //     )
-          ],
-        ),
-      ],
     );
   }
 

@@ -13,9 +13,24 @@ class News extends StatefulWidget {
 
 // 动态面板的动态
 class _News extends State<News> {
+  static const double _imageSize = 50;
+  List<Widget> testContainers = [
+    Container( width: _imageSize, height: _imageSize, color: Colors.red, ),
+    Container( width: _imageSize, height: _imageSize, color: Colors.blue, ),
+    Container( width: _imageSize, height: _imageSize, color: Colors.green, ),
+    Container( width: _imageSize, height: _imageSize, color: Colors.yellow, ),
+    Container( width: _imageSize, height: _imageSize, color: Colors.purple, ),
+    Container( width: _imageSize, height: _imageSize, color: Colors.cyan, ),
+    Container( width: _imageSize, height: _imageSize, color: Colors.red, ),
+    Container( width: _imageSize, height: _imageSize, color: Colors.blue, ),
+    Container( width: _imageSize, height: _imageSize, color: Colors.green, ),
+    Container( width: _imageSize, height: _imageSize, color: Colors.yellow, ),
+    Container( width: _imageSize, height: _imageSize, color: Colors.purple, ),
+    Container( width: _imageSize, height: _imageSize, color: Colors.cyan, ),
+  ];
+
   @override
   Widget build(BuildContext context) {
-    const double _imageSize = 50;
     return Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -23,20 +38,7 @@ class _News extends State<News> {
             BriefUI(
               name: "wuzirui",
               content: "Content " * 20,
-              images: [
-                Container( width: _imageSize, height: _imageSize, color: Colors.red, ),
-                Container( width: _imageSize, height: _imageSize, color: Colors.blue, ),
-                Container( width: _imageSize, height: _imageSize, color: Colors.green, ),
-                Container( width: _imageSize, height: _imageSize, color: Colors.yellow, ),
-                Container( width: _imageSize, height: _imageSize, color: Colors.purple, ),
-                Container( width: _imageSize, height: _imageSize, color: Colors.cyan, ),
-                Container( width: _imageSize, height: _imageSize, color: Colors.red, ),
-                Container( width: _imageSize, height: _imageSize, color: Colors.blue, ),
-                Container( width: _imageSize, height: _imageSize, color: Colors.green, ),
-                Container( width: _imageSize, height: _imageSize, color: Colors.yellow, ),
-                Container( width: _imageSize, height: _imageSize, color: Colors.purple, ),
-                Container( width: _imageSize, height: _imageSize, color: Colors.cyan, ),
-              ],
+              images: testContainers,
             ),
 
           ],

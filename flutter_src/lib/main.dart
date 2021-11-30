@@ -34,6 +34,7 @@ class MyApp extends StatelessWidget {
     const appName = '首都高校校景地图';
     return MaterialApp(
       title: appName,
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
         brightness: Brightness.light,
         primaryColor: Colors.lightGreen[900],
@@ -85,8 +86,7 @@ class _Pages extends State<Pages> {
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(icon: Icon(Icons.map), label: '地图'),
           BottomNavigationBarItem(icon: Icon(Icons.art_track), label: '动态'),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.account_circle), label: '个人信息')
+          BottomNavigationBarItem( icon: Icon(Icons.account_circle), label: '个人信息')
         ],
         currentIndex: _selectedItem,
         onTap: (int index) {
