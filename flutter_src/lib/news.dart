@@ -40,6 +40,8 @@ class _News extends State<News> {
               content: "Content " * 20,
               images: testContainers,
               avatar: const AssetImage("./assets/logo.jpg"),
+              onTap: () => print("hello"),
+              onTapImage: (i) => print("Tap $i"),
             ),
 
           ],

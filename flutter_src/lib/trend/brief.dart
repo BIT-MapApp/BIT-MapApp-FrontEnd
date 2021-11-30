@@ -2,11 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:flutter/widgets.dart';
 
+import 'detail.dart';
+
 class BriefUI extends StatefulWidget {
   final String name;
   final String content;
   final List<Widget> images;
   final ImageProvider avatar;
+  final GestureTapCallback? onTap;
+  final ImageDetailCallback? onTapImage;
 
   const BriefUI({
     Key? key,
@@ -14,6 +18,8 @@ class BriefUI extends StatefulWidget {
     required this.content,
     required this.images,
     required this.avatar,
+    this.onTap,
+    this.onTapImage,
   }) : super(key: key);
 
   @override
@@ -23,7 +29,9 @@ class BriefUI extends StatefulWidget {
 class _BriefUIState extends State<BriefUI> {
   final double _imageSize = 50.0;
   final double _avatarSize = 50.0;
-  final int _brightness = 243;
+  static const int _normalBrightness = 243;
+  static const int _chosenBrightness = 233;
+  int _brightness = _normalBrightness;
 
   @override
   Widget build(BuildContext context) {
@@ -57,7 +65,14 @@ class _BriefUIState extends State<BriefUI> {
     ListView.builder(
       itemBuilder: (context, i) {
         if (i % 2 == 0) {
-          return widget.images[i ~/ 2];
+          return GestureDetector(
+            child: widget.images[i ~/ 2],
+            onTap: () {
+              if (widget.onTapImage != null) {
+                widget.onTapImage!(i ~/ 2);
+              }
+            },
+          );
         }
         return const SizedBox( width: 5, );
       },
@@ -65,7 +80,17 @@ class _BriefUIState extends State<BriefUI> {
       itemCount: widget.images.length * 2,
     );
 
-  Widget getBody() {
+  Widget getBody() =>
+    GestureDetector(
+      child: getWidgetBody(),
+      onTapDown: (detail) { setState(() { _brightness = _chosenBrightness; }); },
+      onTapCancel: () { setState(() { _brightness = _normalBrightness; }); },
+      onTapUp: (detail) { setState(() { _brightness = _normalBrightness; }); },
+      onTap: () { if (widget.onTap != null) { widget.onTap!(); }
+      },
+    );
+
+  Widget getWidgetBody() {
     return Container(
       color: Color.fromRGBO(_brightness, _brightness, _brightness, 1), // 整体的灰度背景
       child: Padding(
@@ -80,7 +105,6 @@ class _BriefUIState extends State<BriefUI> {
                   children: [
                     getUsernameTextWidget(),
                     getContentTextWidget(),
-                    const SizedBox( height: 10, ),
                     getGallery(),
                   ],
                 ),
