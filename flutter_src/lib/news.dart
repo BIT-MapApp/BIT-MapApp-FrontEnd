@@ -39,6 +39,7 @@ class _News extends State<News> {
               name: "wuzirui",
               content: "Content " * 20,
               images: testContainers,
+              avatar: const AssetImage("./assets/logo.jpg"),
             ),
 
           ],

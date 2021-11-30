@@ -6,9 +6,15 @@ class BriefUI extends StatefulWidget {
   final String name;
   final String content;
   final List<Widget> images;
+  final ImageProvider avatar;
 
-  const BriefUI({Key? key, required this.name, required this.content,
-    required this.images}) : super(key: key);
+  const BriefUI({
+    Key? key,
+    required this.name,
+    required this.content,
+    required this.images,
+    required this.avatar,
+  }) : super(key: key);
 
   @override
   _BriefUIState createState() => _BriefUIState();
@@ -89,9 +95,9 @@ class _BriefUIState extends State<BriefUI> {
     return Column(
       children: <Widget>[
         Container(
-          decoration: const BoxDecoration(
+          decoration: BoxDecoration(
             shape: BoxShape.circle,
-            image: DecorationImage(image: AssetImage("./assets/logo.jpg")),
+            image: DecorationImage(image: widget.avatar),
           ),
           height: _avatarSize,
           width: _avatarSize,
