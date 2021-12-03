@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_src/trend/brief.dart';
+import 'package:flutter_src/trend/detail.dart';
 
 class News extends StatefulWidget {
   const News({Key? key}) : super(key: key);
@@ -40,7 +41,19 @@ class _News extends State<News> {
               content: "Content " * 20,
               images: testContainers,
               avatar: const AssetImage("./assets/logo.jpg"),
-              onTap: () => print("hello"),
+              onTap: () {
+                print("OnTap");
+                Navigator.of(context).push(MaterialPageRoute(builder: (context) {
+                  return DetailUI(
+                    nickname: "Wu Zirui",
+                    username: "real_wuzirui",
+                    content: "Content " * 20,
+                    images: testContainers,
+                    avatar: const AssetImage("./assets/logo.jpg"),
+                    onTapImage: (i) { print("Detail OnTapImage $i"); },
+                  );
+                }));
+              },
               onTapImage: (i) => print("Tap $i"),
             ),
 

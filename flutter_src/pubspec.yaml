@@ -97,6 +97,6 @@ flutter:
   # see https://flutter.dev/custom-fonts/#from-packages
 
   fonts:
-    - family: Roboto
+    - family: RobotoThin
       fonts:
-        - asset: assets/Roboto-Regular.ttf
+        - asset: assets/Roboto-Light.ttf

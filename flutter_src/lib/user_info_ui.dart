@@ -3,6 +3,8 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter_src/login_page.dart';
+import 'register_page.dart';
 import 'global.dart';
 
 class UserInfo extends StatefulWidget {
@@ -16,93 +18,14 @@ class UserInfo extends StatefulWidget {
 
 // 用户信息面板的状态
 class _UserInfo extends State<UserInfo> {
-  bool _showPassword = false;
-  GlobalKey _formKey = GlobalKey<FormState>();
-
-  final TextEditingController _usernameField = TextEditingController();
-  final TextEditingController _pwdField = TextEditingController();
-
-  String loginResponse = "No response yet";
-
-  @override
-  void initState() {
-    if (Global.lastLogin != null) {
-      _usernameField.text = Global.lastLogin!;
-    }
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext context) {
-    return Center(
+    return const Center(
         child: Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: Form(
-        key: _formKey,
-        child: Column(
-          children: [
-            Text(
-              loginResponse
-            ),
-            TextFormField(
-              autofocus: false,
-              controller: _usernameField,
-              decoration: const InputDecoration(
-                  labelText: '用户名', prefixIcon: Icon(Icons.person)),
-              validator: (val) {
-                return val!.trim().isNotEmpty ? null : "用户名不能为空";
-              },
-            ),
-            TextFormField(
-              autofocus: false,
-              controller: _pwdField,
-              decoration: InputDecoration(
-                  labelText: '密码',
-                  prefixIcon: const Icon(Icons.lock),
-                  suffixIcon: IconButton(
-                      onPressed: () {
-                        setState(() {
-                          _showPassword = !_showPassword;
-                        });
-                      },
-                      icon: Icon(_showPassword
-                          ? Icons.visibility_off
-                          : Icons.visibility))),
-              obscureText: !_showPassword,
-              validator: (val) {
-                return val!.trim().isNotEmpty ? null : "不能为空";
-              },
-            ),
-            Padding(
-              padding: const EdgeInsets.only(top: 30.0),
-              child: ConstrainedBox(
-                constraints: const BoxConstraints.expand(height: 45.0),
-                child: ElevatedButton(
-                  onPressed: _tryLogin,
-                  style: ElevatedButton.styleFrom(
-                      primary: Theme.of(context).primaryColor),
-                  child: const Text("Log In"),
-                ),
-              ),
-            )
-          ],
-        ),
-      ),
+        padding: EdgeInsets.all(16.0),
+          child: LoginForm(),
     ));
   }
 
-  void _tryLogin() async {
-    if (!(_formKey.currentState as FormState).validate()) return;
-    print(_usernameField.text + " " + _pwdField.text);
-    Dio dio = Dio();
-    Map<String, dynamic> mmap = Map();
-    mmap["user"] = _usernameField.text;
-    String url = Global.url + "/queryNickname";
-    print(url);
-    Response resp = await dio.post(url, data: mmap);
-    setState(() {
-      loginResponse = resp.data.toString();
-    });
-    print(loginResponse);
-  }
 }

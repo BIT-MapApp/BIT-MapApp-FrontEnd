@@ -3,6 +3,7 @@ import 'package:flutter/painting.dart';
 import 'package:flutter/widgets.dart';
 
 import 'detail.dart';
+import 'utils.dart';
 
 class BriefUI extends StatefulWidget {
   final String name;
@@ -38,14 +39,6 @@ class _BriefUIState extends State<BriefUI> {
     return getBody();
   }
 
-  Widget getUsernameTextWidget() =>
-    Text(         // username
-      widget.name,
-      style: const TextStyle(
-        fontWeight: FontWeight.bold, fontSize: 16,
-        fontFamily: "Roboto",
-      ),
-    );
 
   Widget getContentTextWidget() =>
     Expanded( child: Text( // content of the brief
@@ -97,13 +90,13 @@ class _BriefUIState extends State<BriefUI> {
         padding: const EdgeInsets.all(8.0),
         child: IntrinsicHeight(   // 用于给出垂直方向上的最大高度，如果不加会报错
           child: Row( children: <Widget>[
-              getAvatar(),        // 头像
+              getAvatar(widget.avatar, _avatarSize),        // 头像
               const SizedBox(width: 10,), // 头像与内容之间的间距
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    getUsernameTextWidget(),
+                    getNicknameTextWidget(widget.name),
                     getContentTextWidget(),
                     getGallery(),
                   ],
@@ -115,18 +108,4 @@ class _BriefUIState extends State<BriefUI> {
     );
   }
 
-  Widget getAvatar() {
-    return Column(
-      children: <Widget>[
-        Container(
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            image: DecorationImage(image: widget.avatar),
-          ),
-          height: _avatarSize,
-          width: _avatarSize,
-        ),
-      ],
-    );
-  }
 }
