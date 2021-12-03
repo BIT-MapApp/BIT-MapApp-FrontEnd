@@ -1,8 +1,16 @@
+import 'dart:convert';
+
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_src/register_page.dart';
 
 import 'global.dart';
+
+class LoggedIn extends Notification {
+  final String username;
+
+  LoggedIn(this.username);
+}
 
 class LoginForm extends StatefulWidget {
   const LoginForm({Key? key}) : super(key: key);
@@ -35,12 +43,6 @@ class _LoginFormState extends State<LoginForm> {
       key: _formKey,
       child: Column(
         children: [
-          Text(
-            loginResponse,
-            style: TextStyle(
-              color: socketOK ? Colors.black : Colors.red,
-            ),
-          ),
           TextFormField(
             autofocus: false,
             controller: _usernameField,
@@ -100,13 +102,16 @@ class _LoginFormState extends State<LoginForm> {
 
   void _tryLogin() async {
     if (!(_formKey.currentState as FormState).validate()) return;
+    ScaffoldMessenger.of(context).hideCurrentSnackBar();
+    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+      content: Text("正在尝试登录..."),
+    ));
     Dio dio = Dio();
-    Map<String, dynamic> mmap = Map();
-    mmap["user"] = _usernameField.text;
-    mmap["password"] = _pwdField.text;
-    // String url = Global.url + "/login";
-    String url = "http://172.21.149.26:5000" + "/login";
-    print(url);
+    Map<String, dynamic> mmap = {
+      "user": _usernameField.text,
+      "password": _pwdField.text,
+    };
+    String url = await Global.url(context) + "/login";
     Response resp;
     try {
       resp = await dio.post(url, data: mmap);
@@ -114,13 +119,28 @@ class _LoginFormState extends State<LoginForm> {
         loginResponse = resp.data.toString();
         socketOK = true;
       });
+      var result = json.decode(loginResponse)["result"];
+      ScaffoldMessenger.of(context).hideCurrentSnackBar();
+      if (result == "success") {
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text("登录成功!"),
+        ));
+        LoggedIn(_usernameField.text).dispatch(context);
+      }
+      else {
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text("用户名或密码错误"),
+        ));
+
+      }
     }
     on DioError catch (_) {
       loginResponse = "Error " + _.message;
       socketOK = false;
-    }
-    finally {
-      print(loginResponse);
+      ScaffoldMessenger.of(context).hideCurrentSnackBar();
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text("登录失败: " + loginResponse),
+      ));
     }
   }
 }

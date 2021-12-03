@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({Key? key}) : super(key: key);
@@ -157,15 +156,20 @@ class _RegisterFormState extends State<RegisterForm> {
           //     }
           //   },
           // ),
-          SizedBox(height: 8),
+          const SizedBox(height: 8),
           ElevatedButton(
             onPressed: () {
-              print((_key.currentState as FormState).validate().toString());
+              if (!(_key.currentState as FormState).validate()) { return; }
+              ScaffoldMessenger.of(context).hideCurrentSnackBar();
+              ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                content: Text("正在尝试注册..."),
+              ));
             },
             child: const Text("验证注册"),
           )
         ],
       ),
     );
+    return const Scaffold();
   }
 }

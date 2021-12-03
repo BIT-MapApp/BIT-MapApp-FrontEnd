@@ -7,8 +7,10 @@ import 'package:flutter_src/login_page.dart';
 import 'register_page.dart';
 import 'global.dart';
 
-class UserInfo extends StatefulWidget {
-  const UserInfo({Key? key}) : super(key: key);
+class UserPage extends StatefulWidget {
+  const UserPage({Key? key, required this.username}) : super(key: key);
+
+  final String username;
 
   @override
   State<StatefulWidget> createState() {
@@ -17,15 +19,44 @@ class UserInfo extends StatefulWidget {
 }
 
 // 用户信息面板的状态
-class _UserInfo extends State<UserInfo> {
+class _UserInfo extends State<UserPage> {
+  String _username = "";
+
+  @override
+  void initState() {
+    _username = widget.username;
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
-    return const Center(
+    return Center(
         child: Padding(
-        padding: EdgeInsets.all(16.0),
-          child: LoginForm(),
+        padding: const EdgeInsets.all(16.0),
+          child: NotificationListener<LoggedIn>(
+            onNotification: (notification) {
+              setState(() {
+                _username = notification.username;
+              });
+              return false;
+            },
+            child: _username != "" ? const UserInfoPage() : const LoginForm(),
+          ),
     ));
   }
 
+}
+
+class UserInfoPage extends StatefulWidget {
+  const UserInfoPage({Key? key}) : super(key: key);
+
+  @override
+  _UserInfoPageState createState() => _UserInfoPageState();
+}
+
+class _UserInfoPageState extends State<UserInfoPage> {
+  @override
+  Widget build(BuildContext context) {
+    return Container(color: Colors.black,);
+  }
 }
