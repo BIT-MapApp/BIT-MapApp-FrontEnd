@@ -24,7 +24,7 @@ class UserModel extends ChangeNotifier {
 
   Future<void> setUsername(String username) async {
     _username = username;
-    notifyListeners();
     _fetchNickname();
+    notifyListeners();
   }
 }

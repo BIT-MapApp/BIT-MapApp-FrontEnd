@@ -10,8 +10,10 @@ import 'package:flutter_baidu_mapapi_base/flutter_baidu_mapapi_base.dart';
 import 'package:flutter_baidu_mapapi_search/flutter_baidu_mapapi_search.dart';
 import 'package:provider/provider.dart';
 
+import 'debug_page.dart';
 import 'login_page.dart';
 import 'map_ui.dart';
+import 'model/trend_model.dart';
 import 'model/user_model.dart';
 import 'news.dart';
 import 'user_info_ui.dart';
@@ -28,8 +30,11 @@ void main() {
 // 请在主工程的Manifest文件里设置，详细配置方法请参考[https://lbs.baidu.com/ 官网][https://lbs.baidu.com/)demo
     BMFMapSDK.setCoordType(BMF_COORD_TYPE.BD09LL);
   }
-  runApp(ChangeNotifierProvider(
-    create: (context) => UserModel(),
+  runApp(MultiProvider(
+    providers: [
+      ChangeNotifierProvider( create: (context) => UserModel(), ),
+      ChangeNotifierProvider( create: (context) => TrendModel(), ),
+    ],
     child: const MyApp(),
   ));
 }
@@ -66,7 +71,6 @@ class Pages extends StatefulWidget {
 }
 
 class _Pages extends State<Pages> {
-  String _username = "";
   int _selectedItem = 0; // 当前选中的面板编号
 
   @override
@@ -81,9 +85,11 @@ class _Pages extends State<Pages> {
       case 0:
         return const MapUI();
       case 1:
-        return const News();
+        return false ? const DebugPage() : const News();
       case 2:
         return const UserPage();
+      case 3:
+        return const DebugPage();
     }
     return const MapUI();
   }
@@ -103,8 +109,7 @@ class _Pages extends State<Pages> {
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(icon: Icon(Icons.map), label: '地图'),
           BottomNavigationBarItem(icon: Icon(Icons.art_track), label: '动态'),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.account_circle), label: '个人信息')
+          BottomNavigationBarItem( icon: Icon(Icons.account_circle), label: '个人信息'),
         ],
         currentIndex: _selectedItem,
         onTap: (int index) {

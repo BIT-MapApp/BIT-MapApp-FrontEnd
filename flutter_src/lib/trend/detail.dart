@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_src/trend/utils.dart';
+import 'package:flutter_src/utils.dart';
 
 typedef ImageDetailCallback = void Function(int index);
 

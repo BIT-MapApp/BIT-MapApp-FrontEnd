@@ -31,6 +31,8 @@ class _UserInfo extends State<UserPage> {
     return Center(
         child: Padding(
         padding: const EdgeInsets.all(16.0),
+
+          // Consumer 获取一个UserModel对象，获取username，并订阅其更新。如果登录状态改变，将会重画界面
           child: Consumer<UserModel>(
             builder: (context, model, child) {
               return model.username == "" ? const LoginForm() : child ?? const Text("fatal error");
@@ -51,6 +53,11 @@ class UserInfoPage extends StatefulWidget {
 class _UserInfoPageState extends State<UserInfoPage> {
   @override
   Widget build(BuildContext context) {
-    return Container(color: Colors.black,);
+    return Consumer<UserModel>(
+      builder: (context, model, child) {
+        return Text("Welcome, " + model.nickname);
+      },
+      child: null,
+    );
   }
 }

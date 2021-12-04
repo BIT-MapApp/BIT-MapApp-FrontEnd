@@ -3,7 +3,7 @@ import 'package:flutter/painting.dart';
 import 'package:flutter/widgets.dart';
 
 import 'detail.dart';
-import 'utils.dart';
+import '../utils.dart';
 
 class BriefUI extends StatefulWidget {
   final String name;

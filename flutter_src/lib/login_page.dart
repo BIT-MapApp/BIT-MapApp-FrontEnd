@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_src/register_page.dart';
+import 'package:flutter_src/utils.dart';
 import 'package:provider/provider.dart';
 
 import 'global.dart';
@@ -102,15 +103,11 @@ class _LoginFormState extends State<LoginForm> {
     ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
       content: Text("正在尝试登录..."),
     ));
-    Dio dio = Dio();
-    Map<String, dynamic> mmap = {
-      "user": _usernameField.text,
-      "password": _pwdField.text,
-    };
-    String url = Global.url + "/login";
-    Response resp;
     try {
-      resp = await dio.post(url, data: mmap);
+      Response resp = await postResponseFromServer(context, "/login", {
+        "user": _usernameField.text,
+        "password": _pwdField.text,
+      });
       setState(() {
         loginResponse = resp.data.toString();
         socketOK = true;
@@ -131,12 +128,6 @@ class _LoginFormState extends State<LoginForm> {
       }
     }
     on DioError catch (_) {
-      loginResponse = "Error " + _.message;
-      socketOK = false;
-      ScaffoldMessenger.of(context).hideCurrentSnackBar();
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text("登录失败: " + loginResponse),
-      ));
     }
   }
 }
