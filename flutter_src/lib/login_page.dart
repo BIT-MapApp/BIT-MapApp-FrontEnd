@@ -3,14 +3,10 @@ import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_src/register_page.dart';
+import 'package:provider/provider.dart';
 
 import 'global.dart';
-
-class LoggedIn extends Notification {
-  final String username;
-
-  LoggedIn(this.username);
-}
+import 'model/user_model.dart';
 
 class LoginForm extends StatefulWidget {
   const LoginForm({Key? key}) : super(key: key);
@@ -111,7 +107,7 @@ class _LoginFormState extends State<LoginForm> {
       "user": _usernameField.text,
       "password": _pwdField.text,
     };
-    String url = await Global.url(context) + "/login";
+    String url = Global.url + "/login";
     Response resp;
     try {
       resp = await dio.post(url, data: mmap);
@@ -125,7 +121,7 @@ class _LoginFormState extends State<LoginForm> {
         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
           content: Text("登录成功!"),
         ));
-        LoggedIn(_usernameField.text).dispatch(context);
+        Provider.of<UserModel>(context, listen: false).setUsername(_usernameField.text);
       }
       else {
         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(

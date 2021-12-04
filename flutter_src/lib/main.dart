@@ -1,3 +1,5 @@
+import 'dart:async';
+import 'dart:convert';
 import 'dart:io' show Platform;
 
 import 'package:flutter/material.dart';
@@ -6,9 +8,11 @@ import 'package:flutter_src/user_info_ui.dart';
 import 'package:flutter_baidu_mapapi_map/flutter_baidu_mapapi_map.dart';
 import 'package:flutter_baidu_mapapi_base/flutter_baidu_mapapi_base.dart';
 import 'package:flutter_baidu_mapapi_search/flutter_baidu_mapapi_search.dart';
+import 'package:provider/provider.dart';
 
 import 'login_page.dart';
 import 'map_ui.dart';
+import 'model/user_model.dart';
 import 'news.dart';
 import 'user_info_ui.dart';
 import 'global.dart';
@@ -24,7 +28,10 @@ void main() {
 // 请在主工程的Manifest文件里设置，详细配置方法请参考[https://lbs.baidu.com/ 官网][https://lbs.baidu.com/)demo
     BMFMapSDK.setCoordType(BMF_COORD_TYPE.BD09LL);
   }
-  runApp(const MyApp());
+  runApp(ChangeNotifierProvider(
+    create: (context) => UserModel(),
+    child: const MyApp(),
+  ));
 }
 
 class MyApp extends StatelessWidget {
@@ -70,45 +77,42 @@ class _Pages extends State<Pages> {
 
   Widget _getUI() {
     // 获得当前选中的面板
-    switch(_selectedItem) {
-      case 0: return const MapUI();
-      case 1: return const News();
-      case 2: return UserPage(username: _username,);
+    switch (_selectedItem) {
+      case 0:
+        return const MapUI();
+      case 1:
+        return const News();
+      case 2:
+        return const UserPage();
     }
     return const MapUI();
   }
 
   @override
   Widget build(BuildContext context) {
+
     // 主页面脚手架的搭建，包含顶栏和底部的面板导航栏
-    return NotificationListener<LoggedIn> (
-      onNotification: (notification) {
-        setState(() {
-          _username = notification.username;
-        });
-        return true;
-      },
-      child: Scaffold(
-        appBar: AppBar(
-          title: Text(widget.title),
-          backgroundColor: Theme.of(context).primaryColor,
-        ),
-        body: _getUI(),
-        // 导航栏
-        bottomNavigationBar: BottomNavigationBar(
-          items: const <BottomNavigationBarItem>[
-            BottomNavigationBarItem(icon: Icon(Icons.map), label: '地图'),
-            BottomNavigationBarItem(icon: Icon(Icons.art_track), label: '动态'),
-            BottomNavigationBarItem( icon: Icon(Icons.account_circle), label: '个人信息')
-          ],
-          currentIndex: _selectedItem,
-          onTap: (int index) {
-            setState(() {
-              // 切换到对应的面板
-              _selectedItem = index;
-            });
-          },
-        ),
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(widget.title),
+        backgroundColor: Theme.of(context).primaryColor,
+      ),
+      body: _getUI(),
+      // 导航栏
+      bottomNavigationBar: BottomNavigationBar(
+        items: const <BottomNavigationBarItem>[
+          BottomNavigationBarItem(icon: Icon(Icons.map), label: '地图'),
+          BottomNavigationBarItem(icon: Icon(Icons.art_track), label: '动态'),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.account_circle), label: '个人信息')
+        ],
+        currentIndex: _selectedItem,
+        onTap: (int index) {
+          setState(() {
+            // 切换到对应的面板
+            _selectedItem = index;
+          });
+        },
       ),
     );
   }

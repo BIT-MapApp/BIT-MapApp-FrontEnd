@@ -5,11 +5,5 @@ import 'package:flutter/material.dart';
 class Global {
   static String? lastLogin;
   static bool debugMode = true;
-  static String _url = "";
-  static Future<String> url(context) async {
-    if (_url != "") return _url;
-    String jsonStr = await DefaultAssetBundle.of(context).loadString("assets/config.json");
-    _url = json.decode(jsonStr)["Server Url"];
-    return _url;
-  }
+  static String url = "http://172.21.149.26:5000/";
 }

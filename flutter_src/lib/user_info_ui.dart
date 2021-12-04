@@ -4,13 +4,13 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_src/login_page.dart';
+import 'package:provider/provider.dart';
+import 'model/user_model.dart';
 import 'register_page.dart';
 import 'global.dart';
 
 class UserPage extends StatefulWidget {
-  const UserPage({Key? key, required this.username}) : super(key: key);
-
-  final String username;
+  const UserPage({Key? key}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
@@ -20,11 +20,9 @@ class UserPage extends StatefulWidget {
 
 // 用户信息面板的状态
 class _UserInfo extends State<UserPage> {
-  String _username = "";
 
   @override
   void initState() {
-    _username = widget.username;
     super.initState();
   }
 
@@ -33,16 +31,12 @@ class _UserInfo extends State<UserPage> {
     return Center(
         child: Padding(
         padding: const EdgeInsets.all(16.0),
-          child: NotificationListener<LoggedIn>(
-            onNotification: (notification) {
-              setState(() {
-                _username = notification.username;
-              });
-              return false;
+          child: Consumer<UserModel>(
+            builder: (context, model, child) {
+              return model.username == "" ? const LoginForm() : child ?? const Text("fatal error");
             },
-            child: _username != "" ? const UserInfoPage() : const LoginForm(),
-          ),
-    ));
+            child: const UserInfoPage(),
+    )));
   }
 
 }
