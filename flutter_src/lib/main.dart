@@ -4,6 +4,7 @@ import 'dart:io' show Platform;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter_src/trend/post_trend.dart';
 import 'package:flutter_src/user_info_ui.dart';
 import 'package:flutter_baidu_mapapi_map/flutter_baidu_mapapi_map.dart';
 import 'package:flutter_baidu_mapapi_base/flutter_baidu_mapapi_base.dart';
@@ -13,6 +14,7 @@ import 'package:provider/provider.dart';
 import 'debug_page.dart';
 import 'login_page.dart';
 import 'map_ui.dart';
+import 'model/sites_model.dart';
 import 'model/trend_model.dart';
 import 'model/user_model.dart';
 import 'news.dart';
@@ -34,6 +36,7 @@ void main() {
     providers: [
       ChangeNotifierProvider( create: (context) => UserModel(), ),
       ChangeNotifierProvider( create: (context) => TrendModel(), ),
+      ChangeNotifierProvider( create: (context) => SitesModel(), ),
     ],
     child: const MyApp(),
   ));
@@ -85,7 +88,7 @@ class _Pages extends State<Pages> {
       case 0:
         return const MapUI();
       case 1:
-        return false ? const DebugPage() : const News();
+        return true ? const DebugPage() : const News();
       case 2:
         return const UserPage();
       case 3:
@@ -104,6 +107,14 @@ class _Pages extends State<Pages> {
         backgroundColor: Theme.of(context).primaryColor,
       ),
       body: _getUI(),
+      floatingActionButtonLocation: FloatingActionButtonLocation.startFloat,
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) { return const PostTrendPage(); }));
+        },
+        child: const Icon(Icons.camera),
+        backgroundColor: Theme.of(context).primaryColor,
+      ),
       // 导航栏
       bottomNavigationBar: BottomNavigationBar(
         items: const <BottomNavigationBarItem>[
