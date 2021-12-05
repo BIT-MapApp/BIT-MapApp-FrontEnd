@@ -22,6 +22,7 @@ class MapUI extends StatefulWidget {
 // 地图面板的状态
 class _mapUI extends State<MapUI> {
   BMFMapController? mapController;
+  BMFMapController? getController() => mapController;
 
   @override
   void initState() {
@@ -89,7 +90,7 @@ class _mapUI extends State<MapUI> {
       rotateEnabled: false,
       compassPosition: BMFPoint(0, 0),
       showMapScaleBar: true,
-      showMapPoi: ! Global.debugMode,
+      showMapPoi: Global.debugMode,
       maxZoomLevel: 20,
       minZoomLevel: 3,
     );
@@ -105,10 +106,11 @@ class _mapUI extends State<MapUI> {
       child: Flex(
         direction: Axis.vertical,
         children: [
-          const Expanded(
+          Expanded(
             flex: 8,
             child: SiteBar(
               size: 40,
+              mapController: getController,
             ),
           ),
           Expanded(

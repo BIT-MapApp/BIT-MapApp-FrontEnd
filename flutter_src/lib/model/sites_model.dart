@@ -3,7 +3,7 @@ import 'package:flutter_baidu_mapapi_map/flutter_baidu_mapapi_map.dart';
 import 'package:flutter_baidu_mapapi_base/flutter_baidu_mapapi_base.dart';
 
 class SitesModel extends ChangeNotifier {
-  final List<int> _sitesId = [0, 1, 2];
+  final List<int> _sitesId = [0, 1, 2, 3, 4, 5];
   final Map<int, BMFCoordinate> _location = {};
   final Map<int, String> _name = {};
 
@@ -25,9 +25,12 @@ class SitesModel extends ChangeNotifier {
       0: BMFCoordinate(39.74059333434651, 116.17627056793135),
       1: BMFCoordinate(39.737839954962354, 116.1829270117603),
       2: BMFCoordinate(39.73814512086165, 116.17729463621274),
+      3: BMFCoordinate(39.75059333434651, 116.17627056793135),
+      4: BMFCoordinate(39.767839954962354, 116.1829270117603),
+      5: BMFCoordinate(39.77814512086165, 116.17729463621274),
     });
     _name.addAll({
-      0: "北湖", 1: "良乡体育馆", 2: "徐特立图书馆"
+      0: "北湖", 1: "良乡体育馆", 2: "徐特立图书馆", 3: "3", 4: "4", 5: "5",
     });
     notifyListeners();
   }
