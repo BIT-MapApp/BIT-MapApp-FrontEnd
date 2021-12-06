@@ -97,6 +97,8 @@ class _mapUI extends State<MapUI> {
     return mapOptions;
   }
 
+  final SiteBarController _siteBarController = SiteBarController();
+
   @override
   Widget build(BuildContext context) {
     Size screenSize = MediaQuery.of(context).size;
@@ -107,10 +109,13 @@ class _mapUI extends State<MapUI> {
         direction: Axis.vertical,
         children: [
           Expanded(
-            flex: 8,
-            child: SiteBar(
-              size: 40,
-              mapController: getController,
+            flex: 7,
+            child: Center(
+              child: SiteBar(
+                size: 40,
+                mapController: getController,
+                controller: _siteBarController,
+              ),
             ),
           ),
           Expanded(
