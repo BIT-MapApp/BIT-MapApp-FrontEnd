@@ -121,7 +121,7 @@ class _News extends State<News> {
             }
             else {
               // 当前不是最后一条
-              return _itemList[index];
+              return _itemList[_itemList.length - index - 1];
             }
           },
           separatorBuilder: (context, index) {

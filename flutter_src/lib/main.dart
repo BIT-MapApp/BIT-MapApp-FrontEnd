@@ -103,9 +103,14 @@ class _Pages extends State<Pages> {
   Widget build(BuildContext context) {
 
     var global = Provider.of<Global>(context, listen: false);
+    var trend = Provider.of<TrendModel>(context, listen: false);
     Future(() async => Provider.of<SitesModel>(context, listen: false).fetchMap()).then((value) =>
-      Provider.of<TrendModel>(context, listen: false).updateAllTrendList(context)).then((value) async {
-    }).then((value) {
+      trend.updateAllTrendList(context)).then((value) async {
+        trend.trendIDList.forEach((id) async {
+          trend.getTrendDetail(context, id).then((value) => value.imgIDList.forEach((imgId) {
+            trend.getImageById(context, imgId);
+          }));
+        });
     });
     // 主页面脚手架的搭建，包含顶栏和底部的面板导航栏
     return Scaffold(
@@ -125,7 +130,7 @@ class _Pages extends State<Pages> {
             });
           }
           else {
-            Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) { return PostTrendPage(); }));
+            Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) { return const PostTrendPage(); }));
           }
         },
         child: const Icon(Icons.camera),

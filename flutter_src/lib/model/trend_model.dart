@@ -34,8 +34,12 @@ class TrendModel extends ChangeNotifier {
     notifyListeners();
     return this;
   }
-  
+
+  final Map<int, TrendDetail> _trendCache = {};
   Future<TrendDetail> getTrendDetail(BuildContext context, int id) async {
+    if (_trendCache.containsKey(id)) {
+      return _trendCache[id]!;
+    }
     Response resp = await postResponseFromServer(context, "dongtai", {
       "method": "check", "id": id.toString()
     });
@@ -52,7 +56,7 @@ class TrendModel extends ChangeNotifier {
         }
       }}
 
-    return TrendDetail(
+    _trendCache[id] = TrendDetail(
       result["user"] as String,
       imageIdList,
       result["txt"] as String,
@@ -60,23 +64,7 @@ class TrendModel extends ChangeNotifier {
       result["time"] as String,
       await Provider.of<UserModel>(context, listen: false).getNicknameByUsername(context, result["user"]),
     );
-  }
-
-  Uint8List consolidateHttpClientResponseBytes(List<int> data) {
-    // response.contentLength is not trustworthy when GZIP is involved
-    // or other cases where an intermediate transformer has been applied
-    // to the stream.
-    final List<List<int>> chunks = <List<int>>[];
-    int contentLength = 0;
-    chunks.add(data);
-    contentLength += data.length;
-    final Uint8List bytes = Uint8List(contentLength);
-    int offset = 0;
-    for (List<int> chunk in chunks) {
-      bytes.setRange(offset, offset + chunk.length, chunk);
-      offset += chunk.length;
-    }
-    return bytes;
+    return _trendCache[id]!;
   }
 
   final Map<int, ImageProvider> _imageCache = {};
