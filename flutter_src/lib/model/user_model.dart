@@ -6,6 +6,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_src/global.dart';
 import 'package:flutter_src/utils.dart';
+import 'package:provider/provider.dart';
 
 class UserModel extends ChangeNotifier {
   String _localUsername = "";
@@ -15,26 +16,22 @@ class UserModel extends ChangeNotifier {
 
   final Map<String, String> _nicknameCache = {};
 
-  Future<String> getNicknameByUsername(String username) async {
+  Future<String> getNicknameByUsername(BuildContext context, String username) async {
     if (_nicknameCache.containsKey(username)) return _nicknameCache[username] ?? "";
-    Dio dio = Dio();
-    Map<String,dynamic> mmap = { "user": username, };
-
-    String url = Global.url + "/search";
-    Response resp;
-    resp = await dio.post(url, data: mmap);
+    Response resp = await postResponseFromServer(context, "search", { "user": username, });
     String ret = json.decode(resp.data.toString())["nickname"];
     _nicknameCache.addAll({username: ret});
     return ret;
   }
 
-  Future<void> _fetchNickname() async {
-    _localNickname = await getNicknameByUsername(localUsername);
+  Future<void> _fetchNickname(BuildContext context) async {
+    _localNickname = await getNicknameByUsername(context, localUsername);
+    notifyListeners();
   }
 
-  Future<void> setUsername(String username) async {
+  Future<void> setUsername(BuildContext context, String username) async {
     _localUsername = username;
-    _fetchNickname();
+    _fetchNickname(context);
     notifyListeners();
   }
 }

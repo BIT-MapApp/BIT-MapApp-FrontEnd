@@ -5,20 +5,21 @@ import 'dart:typed_data';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter_src/model/user_model.dart';
 import 'package:flutter_src/utils.dart';
+import 'package:provider/provider.dart';
 
 import '../global.dart';
 
 class TrendDetail {
-  final String _sendUsername;
-  final List<int> _imgIDList;
-  final String _content;
-  final String _location;
-  final String _time;
+  final String sendUsername;
+  final String sendNickname;
+  final List<int> imgIDList;
+  final String content;
+  final String location;
+  final String time;
 
-  TrendDetail(this._sendUsername, this._imgIDList, this._content, this._location, this._time);
-
-
+  TrendDetail(this.sendUsername, this.imgIDList, this.content, this.location, this.time, this.sendNickname);
 }
 
 class TrendModel extends ChangeNotifier {
@@ -27,7 +28,7 @@ class TrendModel extends ChangeNotifier {
   List<int> get trendIDList => _tlist;
 
   Future<TrendModel> updateAllTrendList(BuildContext context) async {
-    Response resp = await postResponseFromServer(context, "/dongtai", { "method": "checkall"});
+    Response resp = await postResponseFromServer(context, "dongtai", { "method": "checkall"});
     List<dynamic> newList = json.decode(resp.data)["idlist"];
     _tlist = newList.map((e) { return e as int; }).toList();
     notifyListeners();
@@ -35,16 +36,29 @@ class TrendModel extends ChangeNotifier {
   }
   
   Future<TrendDetail> getTrendDetail(BuildContext context, int id) async {
-    Response resp = await postResponseFromServer(context, "/dongtai", {
+    Response resp = await postResponseFromServer(context, "dongtai", {
       "method": "check", "id": id.toString()
     });
     var result = json.decode(resp.data);
+    print(result.toString());
+    var originImageList = result["pics"] as List;
+    final List<int> imageIdList = [];
+    if (originImageList.isNotEmpty) {
+      for (var element in originImageList) {
+        if (element.runtimeType == int) {
+          imageIdList.add(element);
+        } else if (element.runtimeType == String) {
+          imageIdList.add(int.parse(element));
+        }
+      }}
+
     return TrendDetail(
       result["user"] as String,
-      (result["pics"] as List<String>).map((e) => int.parse(e)).toList(),
+      imageIdList,
       result["txt"] as String,
-      result["where"] as String,
-      result["time"] as String
+      result["place"] as String,
+      result["time"] as String,
+      await Provider.of<UserModel>(context, listen: false).getNicknameByUsername(context, result["user"]),
     );
   }
 
@@ -52,7 +66,6 @@ class TrendModel extends ChangeNotifier {
     // response.contentLength is not trustworthy when GZIP is involved
     // or other cases where an intermediate transformer has been applied
     // to the stream.
-    print(1);
     final List<List<int>> chunks = <List<int>>[];
     int contentLength = 0;
     chunks.add(data);
@@ -69,24 +82,11 @@ class TrendModel extends ChangeNotifier {
   final Map<int, ImageProvider> _imageCache = {};
   Future<ImageProvider> getImageById(BuildContext context, int id) async {
     if (_imageCache.containsKey(id)) return _imageCache[id]!;
-    Dio dio = Dio();
-    dio.options.responseType = ResponseType.bytes;
-    Response resp;
-    try {
-      resp = await getImageFromServer(context, "pic", 0);
-    } on DioError catch(_) {
-      print(_.message);
-      rethrow;
-    }
-    print("got image");
-    // final result = BytesBuilder();
-    // var r = await (resp.data as ResponseBody).stream.forEach((element) {
-    //   print(1);
-    //   result.add(element);
-    // }).then((value) {print ("123");return MemoryImage(result.takeBytes());});
-    var bytes = consolidateHttpClientResponseBytes(resp.data);
-    print(1);
-    return MemoryImage(bytes);
+    var resp = await getImageFromServer(context, "getpic", id);
+    _imageCache[id] = resp;
+    print("finish fetching image $id");
+    notifyListeners();
+    return resp;
   }
 
 }

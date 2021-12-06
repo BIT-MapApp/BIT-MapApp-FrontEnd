@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_src/expandable_text.dart';
 import 'package:flutter_src/utils.dart';
 
 typedef ImageDetailCallback = void Function(int index);
@@ -32,21 +33,23 @@ class _DetailUIState extends State<DetailUI> {
   final double _avatarSize = 55.0;
   static const int _normalBrightness = 243;
   static const int _chosenBrightness = 233;
-  int _brightness = _normalBrightness;
 
   Widget getContentTextWidget() =>
-      Expanded( child: Text( // content of the brief
-        widget.content,
-        maxLines: 100,
-        style: const TextStyle(fontSize: 14, decoration: TextDecoration.none),
-        overflow: TextOverflow.clip,
-      ));
+    CommonRichText(
+      text: widget.content,
+      shrinkText: "更多",
+      expandText: "收起",
+      textStyle: const TextStyle(fontSize: 14, decoration: TextDecoration.none),
+    );
+      // Expanded(flex: 1, child: Text( // content of the brief
+      //   widget.content,
+      //   maxLines: 100,
+      //   style: const TextStyle(fontSize: 14, decoration: TextDecoration.none),
+      //   overflow: TextOverflow.clip,
+      // ));
 
   Widget getGallery() =>
-      SizedBox(
-        height: _imageSize * widget.images.length / 3,
-        child: galleryGridBuilder(),
-      );
+      Expanded(flex: 10, child: galleryGridBuilder());
 
   Widget galleryGridBuilder() =>
     GridView.count(
@@ -66,24 +69,26 @@ class _DetailUIState extends State<DetailUI> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Detail")),
+      appBar: AppBar(title: const Text("Detail"),
+        backgroundColor: Theme.of(context).primaryColor,
+      ),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
-        child: IntrinsicHeight(
+        child: SizedBox(
           child: Row(
             children: [
               getAvatar(widget.avatar, _avatarSize),
-              const SizedBox(width: 10,),
               Expanded(
+                flex: 1,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     getNicknameTextWidget(widget.nickname),
                     getUsernameTextWidget(widget.username),
                     getContentTextWidget(),
                     const SizedBox(height: 5),
                     getGallery(),
-                    const Divider(),
                   ],
                 ),
               )

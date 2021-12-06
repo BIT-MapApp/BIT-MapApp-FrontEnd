@@ -28,8 +28,9 @@ class _LoginFormState extends State<LoginForm> {
 
   @override
   void initState() {
-    if (Global.lastLogin != null) {
-      _usernameField.text = Global.lastLogin!;
+    var provider = Provider.of<Global>(context, listen: false);
+    if (provider.lastLogin != null) {
+      _usernameField.text = provider.lastLogin!;
     }
     super.initState();
   }
@@ -104,7 +105,7 @@ class _LoginFormState extends State<LoginForm> {
       content: Text("正在尝试登录..."),
     ));
     try {
-      Response resp = await postResponseFromServer(context, "/login", {
+      Response resp = await postResponseFromServer(context, "login", {
         "user": _usernameField.text,
         "password": _pwdField.text,
       });
@@ -118,7 +119,7 @@ class _LoginFormState extends State<LoginForm> {
         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
           content: Text("登录成功!"),
         ));
-        Provider.of<UserModel>(context, listen: false).setUsername(_usernameField.text);
+        Provider.of<UserModel>(context, listen: false).setUsername(context, _usernameField.text);
       }
       else {
         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(

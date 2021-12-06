@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+import 'model/trend_model.dart';
 
 class DebugPage extends StatefulWidget {
   const DebugPage({Key? key}) : super(key: key);
@@ -71,45 +74,63 @@ class _DebugPageState extends State<DebugPage> {
 
   @override
   Widget build(BuildContext context) {
-    return RefreshIndicator(
-      onRefresh: _onRefresh,
-      child: ListView.separated(
-          controller: _controller,
-          physics: const BouncingScrollPhysics(),
-          itemBuilder: (context,index){
-            //判断是否构建到了最后一条item
-            if(index == _items.length){
-              //判断是不是最后一页
-              if(_mPage < 4){
-                //不是最后一页，返回一个loading窗
-                return Container(
-                  padding: const EdgeInsets.all(16.0),
-                  alignment: Alignment.center,
-                  child: const SizedBox(
-                    width: 24.0,
-                    height: 24.0,
-                    child: CircularProgressIndicator(strokeWidth: 2.0,),
-                  ),
-                );
-              }else{
-                //是最后一页，显示我是有底线的
-                return Container(
-                  padding: const EdgeInsets.all(16.0),
-                  alignment: Alignment.center,
-                  child: const Text('我是有底线的!!!',style:TextStyle(color: Colors.blue),),
-                );
-              }
-            }else{
-              return ListTile(title:Text('${_items[index]}'));
-            }
-          },
-          //分割线构造器
-          separatorBuilder: (context,index){
-            return const Divider(color: Colors.blue,);
-          },
-          //_items.length + 1是为了给最后一行的加载loading留出位置
-          itemCount: _items.length + 1
-      ),
+    return FutureBuilder(
+      builder: (context, AsyncSnapshot<ImageProvider> snap) {
+        if (snap.hasData) {
+          return Column(
+            children: [
+              Image(image: snap.data!)
+            ],
+          );
+        }
+        else {
+          return Container(color: Colors.black,);
+        }
+      },
+      future: Provider.of<TrendModel>(context).getImageById(context, 1).then((value) {
+        print("fetched");
+        return value;
+      }),
     );
+    // return RefreshIndicator(
+    //   onRefresh: _onRefresh,
+    //   child: ListView.separated(
+    //       controller: _controller,
+    //       physics: const BouncingScrollPhysics(),
+    //       itemBuilder: (context,index){
+    //         //判断是否构建到了最后一条item
+    //         if(index == _items.length){
+    //           //判断是不是最后一页
+    //           if(_mPage < 4){
+    //             //不是最后一页，返回一个loading窗
+    //             return Container(
+    //               padding: const EdgeInsets.all(16.0),
+    //               alignment: Alignment.center,
+    //               child: const SizedBox(
+    //                 width: 24.0,
+    //                 height: 24.0,
+    //                 child: CircularProgressIndicator(strokeWidth: 2.0,),
+    //               ),
+    //             );
+    //           }else{
+    //             //是最后一页，显示我是有底线的
+    //             return Container(
+    //               padding: const EdgeInsets.all(16.0),
+    //               alignment: Alignment.center,
+    //               child: const Text('我是有底线的!!!',style:TextStyle(color: Colors.blue),),
+    //             );
+    //           }
+    //         }else{
+    //           return ListTile(title:Text('${_items[index]}'));
+    //         }
+    //       },
+    //       //分割线构造器
+    //       separatorBuilder: (context,index){
+    //         return const Divider(color: Colors.blue,);
+    //       },
+    //       //_items.length + 1是为了给最后一行的加载loading留出位置
+    //       itemCount: _items.length + 1
+    //   ),
+    // );
   }
 }

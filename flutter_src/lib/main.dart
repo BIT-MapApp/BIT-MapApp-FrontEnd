@@ -37,6 +37,7 @@ void main() {
       ChangeNotifierProvider( create: (context) => UserModel(), ),
       ChangeNotifierProvider( create: (context) => TrendModel(), ),
       ChangeNotifierProvider( create: (context) => SitesModel(), ),
+      ChangeNotifierProvider( create: (context) => Global(), ),
     ],
     child: const MyApp(),
   ));
@@ -47,7 +48,7 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const appName = '首都高校校景地图';
+    const appName = 'BIT 校景地图';
     return MaterialApp(
       title: appName,
       debugShowCheckedModeBanner: false,
@@ -78,7 +79,8 @@ class _Pages extends State<Pages> {
 
   @override
   void initState() {
-    if (Global.debugMode) _selectedItem = 2;
+    var provider = Provider.of<Global>(context, listen: false);
+    if (provider.debugMode) _selectedItem = 2;
     super.initState();
   }
 
@@ -88,7 +90,7 @@ class _Pages extends State<Pages> {
       case 0:
         return const MapUI();
       case 1:
-        return true ? const DebugPage() : const News();
+        return const News();
       case 2:
         return const UserPage();
       case 3:
@@ -100,6 +102,11 @@ class _Pages extends State<Pages> {
   @override
   Widget build(BuildContext context) {
 
+    var global = Provider.of<Global>(context, listen: false);
+    Future(() async => Provider.of<SitesModel>(context, listen: false).fetchMap()).then((value) =>
+      Provider.of<TrendModel>(context, listen: false).updateAllTrendList(context)).then((value) async {
+    }).then((value) {
+    });
     // 主页面脚手架的搭建，包含顶栏和底部的面板导航栏
     return Scaffold(
       appBar: AppBar(
@@ -110,7 +117,16 @@ class _Pages extends State<Pages> {
       floatingActionButtonLocation: FloatingActionButtonLocation.startFloat,
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) { return const PostTrendPage(); }));
+          if (Provider.of<UserModel>(context, listen: false).localUsername == "") {
+            ScaffoldMessenger.of(context).hideCurrentSnackBar();
+            ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("请登录后发表动态")));
+            setState(() {
+              _selectedItem = 2;
+            });
+          }
+          else {
+            Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) { return PostTrendPage(); }));
+          }
         },
         child: const Icon(Icons.camera),
         backgroundColor: Theme.of(context).primaryColor,

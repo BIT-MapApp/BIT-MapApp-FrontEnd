@@ -35,7 +35,7 @@ class _UserInfo extends State<UserPage> {
           // Consumer 获取一个UserModel对象，获取username，并订阅其更新。如果登录状态改变，将会重画界面
           child: Consumer<UserModel>(
             builder: (context, model, child) {
-              return model.username == "" ? const LoginForm() : child ?? const Text("fatal error");
+              return model.localUsername == "" ? const LoginForm() : child ?? const Text("fatal error");
             },
             child: const UserInfoPage(),
     )));
@@ -55,7 +55,7 @@ class _UserInfoPageState extends State<UserInfoPage> {
   Widget build(BuildContext context) {
     return Consumer<UserModel>(
       builder: (context, model, child) {
-        return Text("Welcome, " + model.nickname);
+        return Text("Welcome, " + model.localNickname);
       },
       child: null,
     );

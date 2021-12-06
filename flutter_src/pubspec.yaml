@@ -34,6 +34,9 @@ dependencies:
   dio: ^4.0.1
   provider: ^6.0.0
   image_picker: ^0.8.0+3
+  path:
+  image_gallery_saver: ^1.2.2 #图片保存到本地
+  permission_handler: ^7.0.0 #申请储存权限插件
   flutter:
     sdk: flutter
 

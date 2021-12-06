@@ -80,6 +80,7 @@ class _mapUI extends State<MapUI> {
 
   /// 设置地图参数
   BMFMapOptions initMapOptions() {
+    var provider = Provider.of<Global>(context, listen: false);
     BMFMapOptions mapOptions = BMFMapOptions(
       center: posCenter,
       zoomLevel: 17,
@@ -90,7 +91,7 @@ class _mapUI extends State<MapUI> {
       rotateEnabled: false,
       compassPosition: BMFPoint(0, 0),
       showMapScaleBar: true,
-      showMapPoi: Global.debugMode,
+      showMapPoi: provider.debugMode,
       maxZoomLevel: 20,
       minZoomLevel: 3,
     );
