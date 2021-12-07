@@ -103,7 +103,7 @@ class _BriefUIState extends State<BriefUI> {
                   children: [
                     getNicknameTextWidget(widget.name),
                     getContentTextWidget(),
-                    getGallery(),
+                    widget.images.isNotEmpty ? getGallery() : Container(),
                     const SizedBox(height: 5),
                     Row( children: [
                         getVoteWidget(widget.voteCnt, true),
