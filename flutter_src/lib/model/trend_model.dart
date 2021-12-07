@@ -12,6 +12,7 @@ import 'package:provider/provider.dart';
 import '../global.dart';
 
 class TrendDetail {
+  final int trendId;
   final String sendUsername;
   final String sendNickname;
   final List<int> imgIDList;
@@ -19,7 +20,7 @@ class TrendDetail {
   final String location;
   final String time;
 
-  TrendDetail(this.sendUsername, this.imgIDList, this.content, this.location, this.time, this.sendNickname);
+  TrendDetail(this.trendId, this.sendUsername, this.imgIDList, this.content, this.location, this.time, this.sendNickname);
 }
 
 class TrendModel extends ChangeNotifier {
@@ -57,6 +58,7 @@ class TrendModel extends ChangeNotifier {
       }}
 
     _trendCache[id] = TrendDetail(
+      id,
       result["user"] as String,
       imageIdList,
       result["txt"] as String,
@@ -68,7 +70,6 @@ class TrendModel extends ChangeNotifier {
   }
 
   final Map<int, ImageProvider> _imageCache = {};
-  final Map<int, String> _imageUrls = {};
   Future<ImageProvider> getImageById(BuildContext context, int id) async {
     if (_imageCache.containsKey(id)) return _imageCache[id]!;
     Dio dio = Dio();
@@ -84,7 +85,6 @@ class TrendModel extends ChangeNotifier {
       );
       print("finish fetching image $id");
       var loc = ret.headers.map["location"]!.first;
-      _imageUrls[id] = loc;
       ret = await dio.get(loc, options: Options(headers: {HttpHeaders.connectionHeader: 'keep-alive'}));
       var image = MemoryImage(ret.data);
       _imageCache[id] = image;
@@ -95,4 +95,5 @@ class TrendModel extends ChangeNotifier {
       return await getImageById(context, id);
     }
   }
+
 }

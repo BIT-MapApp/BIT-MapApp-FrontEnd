@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter_src/image_full_screen.dart';
 import 'package:flutter_src/model/trend_model.dart';
 import 'package:flutter_src/model/user_model.dart';
 import 'package:flutter_src/trend/brief.dart';
@@ -31,8 +32,23 @@ class _News extends State<News> {
     Future(() => Provider.of<TrendModel>(context, listen: false).updateAllTrendList(context));
   }
 
+  // 点击图片的事件
+  void onImageTap(int trendId, int imageIndex) async {
+    var p = Provider.of<TrendModel>(context, listen: false);
+    TrendDetail trendData = await p.getTrendDetail(context, trendId);
+    final List<ImageProvider> imageList = [];
+    for (int imageId in trendData.imgIDList) {
+      ImageProvider img = await p.getImageById(context, imageId);
+      imageList.add(img);
+    }
+    Navigator.of(context).push(MaterialPageRoute(builder: (context){
+      return Scaffold(
+        body: ImageFullscreenPage(imageList: imageList, index: imageIndex,),
+      );
+    }));
+  }
 
-  Widget buildBriefUI(String username, String nickname, String content, List<Widget> imageList, ImageProvider avatar) {
+  Widget buildBriefUI(int trendId, String username, String nickname, String content, List<Widget> imageList, ImageProvider avatar) {
     return BriefUI(
       name: nickname,
       content: content,
@@ -46,7 +62,7 @@ class _News extends State<News> {
             content: content,
             images: imageList,
             avatar: avatar,
-            onTapImage: (i) { print("Detail OnTapImage $i"); },
+            onTapImage: (i) => onImageTap(trendId, i),
           );
         }));
       },
@@ -90,6 +106,7 @@ class _News extends State<News> {
                   });
 
                   var item = buildBriefUI(
+                      detail.trendId,
                       detail.sendUsername,
                       detail.sendNickname,
                       detail.content,

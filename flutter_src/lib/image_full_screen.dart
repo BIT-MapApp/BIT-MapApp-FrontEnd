@@ -4,9 +4,9 @@ import 'package:photo_view/photo_view_gallery.dart';
 
 
 class ImageFullscreenPage extends StatefulWidget {
-  final List photoList;
+  final List<ImageProvider> imageList;
   final int index;
-  const ImageFullscreenPage({Key? key, required this.photoList, required this.index});
+  const ImageFullscreenPage({Key? key, required this.imageList, required this.index});
   @override
   _ImageFullscreenPageState createState() => _ImageFullscreenPageState();
 }
@@ -20,7 +20,7 @@ class _ImageFullscreenPageState extends State<ImageFullscreenPage> {
   void initState() {
     currentIndex = widget.index;
     initialIndex = widget.index;
-    length = widget.photoList.length;
+    length = widget.imageList.length;
     title = initialIndex + 1;
     super.initState();
   }
@@ -36,6 +36,7 @@ class _ImageFullscreenPageState extends State<ImageFullscreenPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text('${title} / ${length}'),
+        backgroundColor: Theme.of(context).primaryColor,
         centerTitle: true,
       ),
       body: Container(
@@ -53,11 +54,11 @@ class _ImageFullscreenPageState extends State<ImageFullscreenPage> {
                 scrollPhysics: const BouncingScrollPhysics(),
                 builder: (BuildContext context, int index) {
                   return PhotoViewGalleryPageOptions(
-                    imageProvider: NetworkImage(widget.photoList[index]['image']),
+                    imageProvider: widget.imageList[index], //NetworkImage(widget.photoList[index]['image']),
                     initialScale: PhotoViewComputedScale.contained * 1,
                   );
                 },
-                itemCount: widget.photoList.length,
+                itemCount: widget.imageList.length,
                 // loadingChild: widget.loadingChild,
                 backgroundDecoration: const BoxDecoration(
                   color: Colors.black,
