@@ -20,9 +20,6 @@ class News extends StatefulWidget {
 class _News extends State<News> {
   static const double _imageSize = 50;
 
-  // id list 的更新将会导致 item list 的更新
-  // item list 的加载是 lazy 的
-
   @override
   void initState() {
     super.initState();
@@ -37,7 +34,7 @@ class _News extends State<News> {
 
   Widget buildBriefUI(String username, String nickname, String content, List<Widget> imageList, ImageProvider avatar) {
     return BriefUI(
-      name: username,
+      name: nickname,
       content: content,
       images: imageList,
       avatar: avatar,
@@ -53,7 +50,6 @@ class _News extends State<News> {
           );
         }));
       },
-      onTapImage: (i) => print("Tap $i"),
     );
   }
 

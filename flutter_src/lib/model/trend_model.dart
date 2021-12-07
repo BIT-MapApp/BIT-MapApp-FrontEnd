@@ -68,13 +68,31 @@ class TrendModel extends ChangeNotifier {
   }
 
   final Map<int, ImageProvider> _imageCache = {};
+  final Map<int, String> _imageUrls = {};
   Future<ImageProvider> getImageById(BuildContext context, int id) async {
     if (_imageCache.containsKey(id)) return _imageCache[id]!;
-    var resp = await getImageFromServer(context, "getpic", id);
-    _imageCache[id] = resp;
-    print("finish fetching image $id");
-    notifyListeners();
-    return resp;
+    Dio dio = Dio();
+    dio.options.responseType = ResponseType.bytes;
+    var provider = Provider.of<Global>(context, listen: false);
+    String url = provider.url + "getpic";
+    Response ret;
+    try {
+      ret = await dio.post(url, data: { "id": id },
+          options: Options(
+              followRedirects: true,
+              validateStatus: (code) { if (code != null) return code < 500; return false; } )
+      );
+      print("finish fetching image $id");
+      var loc = ret.headers.map["location"]!.first;
+      _imageUrls[id] = loc;
+      ret = await dio.get(loc, options: Options(headers: {HttpHeaders.connectionHeader: 'keep-alive'}));
+      var image = MemoryImage(ret.data);
+      _imageCache[id] = image;
+      notifyListeners();
+      return image;
+    } on Exception catch(_) {
+      print("recursive call");
+      return await getImageById(context, id);
+    }
   }
-
 }
