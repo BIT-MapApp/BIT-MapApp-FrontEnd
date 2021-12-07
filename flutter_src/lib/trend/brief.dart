@@ -12,6 +12,8 @@ class BriefUI extends StatefulWidget {
   final ImageProvider avatar;
   final GestureTapCallback? onTap;
   final ImageDetailCallback? onTapImage;
+  final int commentCnt;
+  final int voteCnt;
 
   const BriefUI({
     Key? key,
@@ -19,6 +21,8 @@ class BriefUI extends StatefulWidget {
     required this.content,
     required this.images,
     required this.avatar,
+    required this.commentCnt,
+    required this.voteCnt,
     this.onTap,
     this.onTapImage,
   }) : super(key: key);
@@ -83,11 +87,34 @@ class _BriefUIState extends State<BriefUI> {
       },
     );
 
+  Widget getVoteWidget(int cnt, bool voted) {
+    return Row(
+      children: [
+        Icon(voted ? Icons.favorite : Icons.favorite_border, color: voted ? Colors.red : Colors.grey,),
+        const SizedBox(width: 3,),
+        Text(cnt.toString()),
+      ],
+    );
+  }
+
+  Widget getCommentWidget(int cnt, VoidCallback onTapComment) {
+    return GestureDetector(
+      onTap: onTapComment,
+      child: Row(
+        children: [
+          const Icon(Icons.messenger, color: Colors.grey,),
+          const SizedBox(width: 3,),
+          Text(cnt.toString()),
+        ],
+      ),
+    );
+  }
+
   Widget getWidgetBody() {
     return Container(
       color: Color.fromRGBO(_brightness, _brightness, _brightness, 1), // 整体的灰度背景
       child: Padding(
-        padding: const EdgeInsets.all(8.0),
+        padding: const EdgeInsets.all(6.0),
         child: IntrinsicHeight(   // 用于给出垂直方向上的最大高度，如果不加会报错
           child: Row( children: <Widget>[
               getAvatar(widget.avatar, _avatarSize),        // 头像
@@ -99,6 +126,12 @@ class _BriefUIState extends State<BriefUI> {
                     getNicknameTextWidget(widget.name),
                     getContentTextWidget(),
                     getGallery(),
+                    const SizedBox(height: 5),
+                    Row( children: [
+                        getVoteWidget(widget.voteCnt, true),
+                        const SizedBox(width: 20,),
+                        getCommentWidget(widget.commentCnt, () {print("I want to comment!");}),
+                      ], ),
                   ],
                 ),
               )

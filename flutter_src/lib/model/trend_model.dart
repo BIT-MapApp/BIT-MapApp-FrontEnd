@@ -19,8 +19,12 @@ class TrendDetail {
   final String content;
   final String location;
   final String time;
+  final List<int> commentIdList;
+  final int voteCount;
 
-  TrendDetail(this.trendId, this.sendUsername, this.imgIDList, this.content, this.location, this.time, this.sendNickname);
+  TrendDetail(this.trendId, this.sendUsername, this.imgIDList,
+      this.content, this.location, this.time, this.sendNickname,
+      this.commentIdList, this.voteCount);
 }
 
 class TrendModel extends ChangeNotifier {
@@ -65,6 +69,8 @@ class TrendModel extends ChangeNotifier {
       result["place"] as String,
       result["time"] as String,
       await Provider.of<UserModel>(context, listen: false).getNicknameByUsername(context, result["user"]),
+      (result["pinglun"] as List).map((e) => e as int).toList(),
+      result["zans"] as int,
     );
     return _trendCache[id]!;
   }

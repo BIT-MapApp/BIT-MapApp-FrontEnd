@@ -48,12 +48,15 @@ class _News extends State<News> {
     }));
   }
 
-  Widget buildBriefUI(int trendId, String username, String nickname, String content, List<Widget> imageList, ImageProvider avatar) {
+  Widget buildBriefUI(int trendId, String username, String nickname, String content, List<Widget> imageList, ImageProvider avatar, int voteCnt, List<int> commentList) {
     return BriefUI(
       name: nickname,
       content: content,
       images: imageList,
       avatar: avatar,
+      onTapImage: (i) => onImageTap(trendId, i),
+      voteCnt: voteCnt,
+      commentCnt: commentList.length,
       onTap: () {
         Navigator.of(context).push(MaterialPageRoute(builder: (context) {
           return DetailUI(
@@ -111,7 +114,9 @@ class _News extends State<News> {
                       detail.sendNickname,
                       detail.content,
                       images,
-                      const AssetImage("assets/logo.jpg")
+                      const AssetImage("assets/logo.jpg"),
+                      detail.voteCount,
+                      detail.commentIdList,
                   );
                   if (_itemList.length > index) {
                     _itemList[index] = item;
