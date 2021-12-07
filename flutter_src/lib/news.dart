@@ -48,24 +48,27 @@ class _News extends State<News> {
     }));
   }
 
-  Widget buildBriefUI(int trendId, String username, String nickname, String content, List<Widget> imageList, ImageProvider avatar, int voteCnt, List<int> commentList) {
+  Future<Widget> buildBriefUI(TrendDetail detail, List<Widget> imageList) async {
+    var avatar = await Provider.of<TrendModel>(context, listen: false).getAvatarByUsername(detail.sendUsername);
     return BriefUI(
-      name: nickname,
-      content: content,
+      name: detail.sendNickname,
+      content: detail.content,
       images: imageList,
       avatar: avatar,
-      onTapImage: (i) => onImageTap(trendId, i),
-      voteCnt: voteCnt,
-      commentCnt: commentList.length,
+      onTapImage: (i) => onImageTap(detail.trendId, i),
+      voteCnt: detail.voteCount,
+      commentCnt: detail.commentIdList.length,
       onTap: () {
         Navigator.of(context).push(MaterialPageRoute(builder: (context) {
           return DetailUI(
-            nickname: nickname,
-            username: username,
-            content: content,
+            nickname: detail.sendNickname,
+            username: detail.sendUsername,
+            content: detail.content,
             images: imageList,
             avatar: avatar,
-            onTapImage: (i) => onImageTap(trendId, i),
+            onTapImage: (i) => onImageTap(detail.trendId, i),
+            voteCnt: detail.voteCount,
+            commentIdList: detail.commentIdList,
           );
         }));
       },
@@ -108,16 +111,7 @@ class _News extends State<News> {
                         );
                   });
 
-                  var item = buildBriefUI(
-                      detail.trendId,
-                      detail.sendUsername,
-                      detail.sendNickname,
-                      detail.content,
-                      images,
-                      const AssetImage("assets/logo.jpg"),
-                      detail.voteCount,
-                      detail.commentIdList,
-                  );
+                  var item = await buildBriefUI( detail, images, );
                   if (_itemList.length > index) {
                     _itemList[index] = item;
                   }

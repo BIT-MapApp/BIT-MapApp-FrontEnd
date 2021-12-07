@@ -71,11 +71,11 @@ class _RichTextState extends State<CommonRichText> {
                 text: !_isExpand
                     ? widget.text
                     : widget.text.substring(0, endOffset),
-                style: TextStyle(color: Colors.black),
+                style: const TextStyle(color: Colors.black),
                 children: [
                   TextSpan(
                       text: _isExpand ? widget.shrinkText : widget.expandText,
-                      style: TextStyle(color: Colors.lightBlueAccent),
+                      style: const TextStyle(color: Colors.lightBlueAccent),
                       recognizer: TapGestureRecognizer()
                         ..onTap = () {
                           setState(() {

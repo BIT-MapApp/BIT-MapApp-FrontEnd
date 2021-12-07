@@ -87,28 +87,6 @@ class _BriefUIState extends State<BriefUI> {
       },
     );
 
-  Widget getVoteWidget(int cnt, bool voted) {
-    return Row(
-      children: [
-        Icon(voted ? Icons.favorite : Icons.favorite_border, color: voted ? Colors.red : Colors.grey,),
-        const SizedBox(width: 3,),
-        Text(cnt.toString()),
-      ],
-    );
-  }
-
-  Widget getCommentWidget(int cnt, VoidCallback onTapComment) {
-    return GestureDetector(
-      onTap: onTapComment,
-      child: Row(
-        children: [
-          const Icon(Icons.messenger, color: Colors.grey,),
-          const SizedBox(width: 3,),
-          Text(cnt.toString()),
-        ],
-      ),
-    );
-  }
 
   Widget getWidgetBody() {
     return Container(

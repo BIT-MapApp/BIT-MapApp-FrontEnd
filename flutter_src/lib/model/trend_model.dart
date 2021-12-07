@@ -102,4 +102,8 @@ class TrendModel extends ChangeNotifier {
     }
   }
 
+  Future<ImageProvider> getAvatarByUsername(String username) async {
+    return AssetImage("assets/logo.jpg");
+  }
+
 }

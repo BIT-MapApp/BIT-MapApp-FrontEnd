@@ -13,6 +13,8 @@ class DetailUI extends StatefulWidget {
   final List<Widget> images;
   final ImageProvider avatar;
   final ImageDetailCallback? onTapImage;
+  final int voteCnt;
+  final List<int> commentIdList;
 
   const DetailUI({
     Key? key,
@@ -21,7 +23,9 @@ class DetailUI extends StatefulWidget {
     required this.content,
     required this.images,
     required this.avatar,
-    this.onTapImage
+    this.onTapImage,
+    required this.voteCnt,
+    required this.commentIdList
   }) : super(key: key);
 
   @override
@@ -41,15 +45,12 @@ class _DetailUIState extends State<DetailUI> {
       expandText: "收起",
       textStyle: const TextStyle(fontSize: 14, decoration: TextDecoration.none),
     );
-      // Expanded(flex: 1, child: Text( // content of the brief
-      //   widget.content,
-      //   maxLines: 100,
-      //   style: const TextStyle(fontSize: 14, decoration: TextDecoration.none),
-      //   overflow: TextOverflow.clip,
-      // ));
 
   Widget getGallery() =>
-      Expanded(flex: 10, child: galleryGridBuilder());
+      SizedBox(
+        child: galleryGridBuilder(),
+        height: (widget.images.length ~/ 3) * _imageSize,
+      );
 
   Widget galleryGridBuilder() =>
     GridView.count(
@@ -74,26 +75,30 @@ class _DetailUIState extends State<DetailUI> {
       ),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
-        child: SizedBox(
-          child: Row(
-            children: [
-              getAvatar(widget.avatar, _avatarSize),
-              Expanded(
-                flex: 1,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    getNicknameTextWidget(widget.nickname),
-                    getUsernameTextWidget(widget.username),
-                    getContentTextWidget(),
-                    const SizedBox(height: 5),
-                    getGallery(),
-                  ],
-                ),
-              )
-            ],
-          ),
+        child: Row(
+          children: [
+            getAvatar(widget.avatar, _avatarSize),
+            const SizedBox(width: 5,),
+            Expanded(
+              flex: 1,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  getNicknameTextWidget(widget.nickname),
+                  getUsernameTextWidget(widget.username),
+                  getContentTextWidget(),
+                  const SizedBox(height: 5),
+                  getGallery(),
+                  const SizedBox(height: 5),
+                  Row( children: [
+                    getVoteWidget(widget.voteCnt, true),
+                    const SizedBox(width: 20,),
+                    getCommentWidget(widget.commentIdList.length, () {print("I want to comment!");}),
+                  ], ),
+                ],
+              ),
+            )
+          ],
         ),
       ),
     );
