@@ -4,6 +4,7 @@ import 'dart:io' show Platform;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter_src/image_full_screen.dart';
 import 'package:flutter_src/trend/post_trend.dart';
 import 'package:flutter_src/user_info_ui.dart';
 import 'package:flutter_baidu_mapapi_map/flutter_baidu_mapapi_map.dart';
@@ -104,7 +105,7 @@ class _Pages extends State<Pages> {
 
     var global = Provider.of<Global>(context, listen: false);
     var trend = Provider.of<TrendModel>(context, listen: false);
-    Future(() async => Provider.of<SitesModel>(context, listen: false).fetchMap()).then((value) =>
+    Future(() async => Provider.of<SitesModel>(context, listen: false).fetchMap(context)).then((value) =>
       trend.updateAllTrendList(context)).then((value) async {
         trend.trendIDList.forEach((id) async {
           trend.getTrendDetail(context, id).then((value) => value.imgIDList.forEach((imgId) {

@@ -40,7 +40,7 @@ class _mapUI extends State<MapUI> {
       print('mapDidLoad-地图加载完成!!!');
       Future(() {
         var provider = Provider.of<SitesModel>(context, listen: false);
-        provider.fetchMap().then((value) {
+        provider.fetchMap(context).then((value) {
           for (var index in provider.SitesId) {
             var pos = provider.getCoordinate(index);
             var text = provider.getSiteName(index);

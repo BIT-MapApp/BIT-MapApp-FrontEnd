@@ -1,9 +1,12 @@
+import 'dart:convert';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_baidu_mapapi_map/flutter_baidu_mapapi_map.dart';
 import 'package:flutter_baidu_mapapi_base/flutter_baidu_mapapi_base.dart';
+import 'package:flutter_src/utils.dart';
 
 class SitesModel extends ChangeNotifier {
-  final List<int> _sitesId = [0, 1, 2, 3, 4, 5];
+  final List<int> _sitesId = [];
   final Map<int, BMFCoordinate> _location = {};
   final Map<int, String> _name = {};
 
@@ -20,18 +23,19 @@ class SitesModel extends ChangeNotifier {
     return _name[id]!;
   }
 
-  Future<void> fetchMap() async {
-    _location.addAll({
-      0: BMFCoordinate(39.74059333434651, 116.17627056793135),
-      1: BMFCoordinate(39.737839954962354, 116.1829270117603),
-      2: BMFCoordinate(39.73814512086165, 116.17729463621274),
-      3: BMFCoordinate(39.75059333434651, 116.17627056793135),
-      4: BMFCoordinate(39.767839954962354, 116.1829270117603),
-      5: BMFCoordinate(39.77814512086165, 116.17729463621274),
-    });
-    _name.addAll({
-      0: "北湖", 1: "良乡体育馆", 2: "徐特立图书馆", 3: "3", 4: "4", 5: "5",
-    });
+  Future<void> fetchMap(BuildContext context) async {
+    _sitesId.clear();
+    var response = await postResponseFromServer(context, "place", { "method": "checkall" });
+    var jmap = json.decode(response.data);
+
+    var tmplist = (jmap["idlist"] as List<dynamic>).map((e) => e as int).toList();
+    for(int i = 0; i < tmplist.length; i++) {
+      _name[tmplist[i]] = jmap["placelist"][i];
+      response = await postResponseFromServer(context, "place", { "method": "checkidif", "id": tmplist[i] });
+      var place = json.decode(response.data);
+      _location[tmplist[i]] = BMFCoordinate(double.parse(place["latitude"]), double.parse(place["longtitude"]));
+    }
+    _sitesId.addAll(tmplist);
     notifyListeners();
   }
 

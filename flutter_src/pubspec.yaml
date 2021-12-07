@@ -30,13 +30,14 @@ dependencies:
   flutter_baidu_mapapi_map: ^3.0.0+2
   flutter_baidu_mapapi_search: ^3.0.0
   flutter_baidu_mapapi_utils: ^3.0.0
-  json_annotation: ^3.0.1
+  json_annotation: ^4.4.0
   dio: ^4.0.1
   provider: ^6.0.0
   image_picker: ^0.8.0+3
   path:
   image_gallery_saver: ^1.2.2 #图片保存到本地
-  permission_handler: ^7.0.0 #申请储存权限插件
+  photo_view: ^0.13.0
+  permission_handler: ^8.3.0 #申请储存权限插件
   flutter:
     sdk: flutter
 
@@ -46,8 +47,8 @@ dependencies:
   cupertino_icons: ^1.0.2
 
 dev_dependencies:
-  json_serializable: ^3.2.5
-  build_runner: ^1.8.0
+  json_serializable: ^6.1.1
+  build_runner: ^2.1.5
   flutter_test:
     sdk: flutter
 
