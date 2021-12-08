@@ -6,20 +6,20 @@ import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_src/image_full_screen.dart';
 import 'package:flutter_src/trend/post_trend.dart';
-import 'package:flutter_src/user_info_ui.dart';
+import 'package:flutter_src/pages/user_info_ui.dart';
 import 'package:flutter_baidu_mapapi_map/flutter_baidu_mapapi_map.dart';
 import 'package:flutter_baidu_mapapi_base/flutter_baidu_mapapi_base.dart';
 import 'package:flutter_baidu_mapapi_search/flutter_baidu_mapapi_search.dart';
 import 'package:provider/provider.dart';
 
-import 'debug_page.dart';
-import 'login_page.dart';
-import 'map_ui.dart';
+import 'pages/debug_page.dart';
+import 'pages/login_page.dart';
+import 'pages/map_ui.dart';
 import 'model/sites_model.dart';
 import 'model/trend_model.dart';
 import 'model/user_model.dart';
-import 'news.dart';
-import 'user_info_ui.dart';
+import 'pages/news.dart';
+import 'pages/user_info_ui.dart';
 import 'global.dart';
 
 // void main() => runApp(const MyApp());
@@ -103,7 +103,6 @@ class _Pages extends State<Pages> {
   @override
   Widget build(BuildContext context) {
 
-    var global = Provider.of<Global>(context, listen: false);
     // 主页面脚手架的搭建，包含顶栏和底部的面板导航栏
     return Scaffold(
       appBar: AppBar(

@@ -1,13 +1,8 @@
-import 'dart:io';
-
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter_src/login_page.dart';
+import 'package:flutter_src/pages/login_page.dart';
 import 'package:provider/provider.dart';
-import 'model/user_model.dart';
-import 'register_page.dart';
-import 'global.dart';
+import '../model/user_model.dart';
 
 class UserPage extends StatefulWidget {
   const UserPage({Key? key}) : super(key: key);

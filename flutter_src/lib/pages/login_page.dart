@@ -2,12 +2,12 @@ import 'dart:convert';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_src/register_page.dart';
+import 'package:flutter_src/pages/register_page.dart';
 import 'package:flutter_src/utils.dart';
 import 'package:provider/provider.dart';
 
-import 'global.dart';
-import 'model/user_model.dart';
+import '../global.dart';
+import '../model/user_model.dart';
 
 class LoginForm extends StatefulWidget {
   const LoginForm({Key? key}) : super(key: key);

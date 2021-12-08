@@ -8,7 +8,7 @@ import 'package:flutter_src/site_bar.dart';
 import 'package:flutter_src/utils.dart';
 import 'package:provider/provider.dart';
 
-import 'global.dart';
+import '../global.dart';
 
 class MapUI extends StatefulWidget {
   const MapUI({Key? key}) : super(key: key);
