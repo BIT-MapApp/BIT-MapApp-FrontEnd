@@ -117,7 +117,7 @@ class _BriefUIState extends State<BriefUI> {
                     widget.images.isNotEmpty ? getGallery() : Container(),
                     const SizedBox(height: 5),
                     Row( children: [
-                        getVoteWidget(widget.voteCnt, true),
+                        getVoteWidget(widget.voteCnt, false),
                         const SizedBox(width: 20,),
                         getCommentWidget(widget.commentCnt, () {print("I want to comment!");}),
                       ], ),

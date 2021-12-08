@@ -27,6 +27,16 @@ class TrendDetail {
       this.commentIdList, this.voteCount);
 }
 
+class CommentDetail {
+  final int commendId;
+  final String content;
+  final String sendUsername;
+  final String time;
+  final int trendId;
+
+  CommentDetail(this.commendId, this.content, this.sendUsername, this.time, this.trendId);
+}
+
 class TrendModel extends ChangeNotifier {
   List<int> _tlist = []; // 动态id的列表
 
@@ -107,7 +117,28 @@ class TrendModel extends ChangeNotifier {
   }
 
   Future<ImageProvider> getAvatarByUsername(String username) async {
-    return AssetImage("assets/logo.jpg");
+    return const AssetImage("assets/logo.jpg");
+  }
+
+  final Map<int, CommentDetail> _commentCache = {};
+  Future<CommentDetail> getCommentDetail(BuildContext context, int id) async {
+    print("fetching comment $id");
+    if (_commentCache.containsKey(id)) {
+      return _commentCache[id]!;
+    }
+    Response resp = await postResponseFromServer(context, "pinglun", {
+      "method": "check", "id": id.toString()
+    });
+    var result = json.decode(resp.data);
+    print(result.toString());
+    _commentCache[id] = CommentDetail(
+      id,
+      result["txt"] as String,
+      result["user"] as String,
+      result["time"] as String,
+      result["dongtai"] as int
+    );
+    return _commentCache[id]!;
   }
 
 }

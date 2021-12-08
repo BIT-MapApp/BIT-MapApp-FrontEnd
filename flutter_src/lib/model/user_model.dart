@@ -17,7 +17,9 @@ class UserModel extends ChangeNotifier {
   final Map<String, String> _nicknameCache = {};
 
   Future<String> getNicknameByUsername(BuildContext context, String username) async {
-    if (_nicknameCache.containsKey(username)) return _nicknameCache[username] ?? "";
+    if (_nicknameCache.containsKey(username)) {
+      return _nicknameCache[username]!;
+    }
     Response resp = await postResponseFromServer(context, "search", { "user": username, });
     String ret = json.decode(resp.data.toString())["nickname"];
     _nicknameCache.addAll({username: ret});
