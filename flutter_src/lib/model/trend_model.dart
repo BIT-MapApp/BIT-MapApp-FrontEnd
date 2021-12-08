@@ -35,7 +35,7 @@ class TrendModel extends ChangeNotifier {
   Future<TrendModel> updateAllTrendList(BuildContext context) async {
     Response resp = await postResponseFromServer(context, "dongtai", { "method": "checkall"});
     List<dynamic> newList = json.decode(resp.data)["idlist"];
-    _tlist = newList.map((e) { return e as int; }).toList();
+    _tlist = newList.map((e) { return e as int; }).toList().reversed.toList();
     notifyListeners();
     return this;
   }
@@ -77,7 +77,11 @@ class TrendModel extends ChangeNotifier {
 
   final Map<int, ImageProvider> _imageCache = {};
   Future<ImageProvider> getImageById(BuildContext context, int id) async {
-    if (_imageCache.containsKey(id)) return _imageCache[id]!;
+    if (_imageCache.containsKey(id)) {
+      print("image cache hit on $id");
+      return _imageCache[id]!;
+    }
+    print("start fetching image $id");
     Dio dio = Dio();
     dio.options.responseType = ResponseType.bytes;
     var provider = Provider.of<Global>(context, listen: false);

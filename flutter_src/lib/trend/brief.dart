@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_src/model/trend_model.dart';
+import 'package:provider/provider.dart';
 
 import 'detail.dart';
 import '../utils.dart';
@@ -8,7 +10,7 @@ import '../utils.dart';
 class BriefUI extends StatefulWidget {
   final String name;
   final String content;
-  final List<Widget> images;
+  final List<int> images;
   final ImageProvider avatar;
   final GestureTapCallback? onTap;
   final ImageDetailCallback? onTapImage;
@@ -62,13 +64,22 @@ class _BriefUIState extends State<BriefUI> {
     ListView.builder(
       itemBuilder: (context, i) {
         if (i % 2 == 0) {
-          return GestureDetector(
-            child: widget.images[i ~/ 2],
-            onTap: () {
-              if (widget.onTapImage != null) {
-                widget.onTapImage!(i ~/ 2);
-              }
-            },
+          return Consumer<TrendModel>(
+            builder: (context, model, child) {
+              return FutureBuilder(
+                future: model.getImageById(context, widget.images[i ~/ 2]),
+                builder: (context, snap) => GestureDetector(
+                    child: snap.hasData ?
+                    Image( width: _imageSize, height: _imageSize, image: snap.data! as ImageProvider, fit: BoxFit.cover, )
+                      : getLoadingBox(_imageSize),
+                    onTap: () {
+                      if (widget.onTapImage != null) {
+                        widget.onTapImage!(i ~/ 2);
+                      }
+                    },
+                  )
+              );
+            }
           );
         }
         return const SizedBox( width: 5, );

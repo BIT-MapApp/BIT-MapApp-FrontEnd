@@ -85,3 +85,11 @@ Widget getCommentWidget(int cnt, VoidCallback onTapComment) {
     ),
   );
 }
+
+Widget getLoadingBox(double size) =>
+    SizedBox( width: size, height: size,
+        child: const Padding(
+          padding: EdgeInsets.all(8.0),
+          child: CircularProgressIndicator(strokeWidth: 2.0,),
+        )
+    );

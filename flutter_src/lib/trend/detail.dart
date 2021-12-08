@@ -1,8 +1,12 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_src/expandable_text.dart';
+import 'package:flutter_src/model/trend_model.dart';
 import 'package:flutter_src/utils.dart';
+import 'package:provider/provider.dart';
 
 typedef ImageDetailCallback = void Function(int index);
 
@@ -10,7 +14,7 @@ class DetailUI extends StatefulWidget {
   final String nickname;
   final String username;
   final String content;
-  final List<Widget> images;
+  final List<int> images;
   final ImageProvider avatar;
   final ImageDetailCallback? onTapImage;
   final int voteCnt;
@@ -49,7 +53,7 @@ class _DetailUIState extends State<DetailUI> {
   Widget getGallery() =>
       SizedBox(
         child: galleryGridBuilder(),
-        height: (widget.images.length ~/ 3) * _imageSize,
+        height: (widget.images.length / 3).ceil() * _imageSize,
       );
 
   Widget galleryGridBuilder() =>
@@ -58,10 +62,17 @@ class _DetailUIState extends State<DetailUI> {
       padding: const EdgeInsets.all(3.0),
       crossAxisSpacing: 3.0,
       mainAxisSpacing: 3.0,
-      children: widget.images.asMap().keys.map((e) {
-        return GestureDetector(
-          child: widget.images[e],
-          onTap: () { if(widget.onTapImage != null) widget.onTapImage!(e); },
+      children: widget.images.map((e) {
+        return Consumer<TrendModel>(
+          builder: (context, model, child) => FutureBuilder(
+            future: model.getImageById(context, e),
+            builder: (context, snap) => GestureDetector(
+              child: snap.hasData ?
+              Image( width: _imageSize, height: _imageSize, image: snap.data! as ImageProvider, fit: BoxFit.cover, )
+                  : getLoadingBox(_imageSize),
+              onTap: () { if(widget.onTapImage != null) widget.onTapImage!(e); },
+            ),
+          ),
         );
       }).toList(),
     );

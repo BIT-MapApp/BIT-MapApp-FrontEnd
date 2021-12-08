@@ -8,6 +8,7 @@ import 'package:flutter_src/trend/detail.dart';
 import 'package:flutter_src/utils.dart';
 import 'package:provider/provider.dart';
 
+// 动态面板的入口
 class News extends StatefulWidget {
   const News({Key? key}) : super(key: key);
 
@@ -17,7 +18,7 @@ class News extends StatefulWidget {
   }
 }
 
-// 动态面板的动态
+// 动态面板的状态
 class _News extends State<News> {
   static const double _imageSize = 50;
 
@@ -29,6 +30,7 @@ class _News extends State<News> {
 
   var _idList = [];
   void updateIDList(BuildContext context) {
+    // 后台更新动态id列表
     Future(() => Provider.of<TrendModel>(context, listen: false).updateAllTrendList(context));
   }
 
@@ -48,7 +50,7 @@ class _News extends State<News> {
     }));
   }
 
-  Future<Widget> buildBriefUI(TrendDetail detail, List<Widget> imageList) async {
+  Future<Widget> buildBriefUI(TrendDetail detail, List<int> imageList) async {
     var avatar = await Provider.of<TrendModel>(context, listen: false).getAvatarByUsername(detail.sendUsername);
     return BriefUI(
       name: detail.sendNickname,
@@ -75,6 +77,21 @@ class _News extends State<News> {
     );
   }
 
+  Future<void> loadTrend(int index) async {
+    var model = Provider.of<TrendModel>(context, listen: false);
+
+    TrendDetail detail = await model.getTrendDetail(context, _idList[index]);
+
+    var item = await buildBriefUI( detail, detail.imgIDList );
+    if (_itemList.length > index) {
+      _itemList[index] = item;
+    }
+    else {
+      _itemList.add(item);
+    }
+    setState(() { });
+  }
+
   final ScrollController _scrollController = ScrollController();
   final List _itemList = [];
   @override
@@ -97,29 +114,7 @@ class _News extends State<News> {
               }
               else {
                 // 未加载完，需要获取现在还没有加载的动态，并显示一个正在加载的图标
-                Future(() async {
-                  TrendDetail detail = await model.getTrendDetail(context, _idList[index]);
-                  final List<Widget> images = [];
-                  detail.imgIDList.forEach((imageId) async {
-                    var image = await model.getImageById(context, imageId);
-                    images.add(
-                        Image(
-                          width: _imageSize, height: _imageSize,
-                          image: image,
-                          fit: BoxFit.cover,
-                        )
-                        );
-                  });
-
-                  var item = await buildBriefUI( detail, images, );
-                  if (_itemList.length > index) {
-                    _itemList[index] = item;
-                  }
-                  else {
-                    _itemList.add(item);
-                  }
-                  setState(() { });
-                });
+                Future(() => loadTrend(index));
                 return Container(
                   padding: const EdgeInsets.all(16.0),
                   alignment: Alignment.center,
@@ -133,7 +128,7 @@ class _News extends State<News> {
             }
             else {
               // 当前不是最后一条
-              return _itemList[_itemList.length - index - 1];
+              return _itemList[index];
             }
           },
           separatorBuilder: (context, index) {
