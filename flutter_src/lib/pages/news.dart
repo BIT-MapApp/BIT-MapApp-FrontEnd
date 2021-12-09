@@ -7,10 +7,12 @@ import 'package:flutter_src/trend/brief.dart';
 import 'package:flutter_src/trend/detail.dart';
 import 'package:flutter_src/utils.dart';
 import 'package:provider/provider.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 // 动态面板的入口
 class News extends StatefulWidget {
-  const News({Key? key}) : super(key: key);
+  const News({Key? key, required this.refreshController}) : super(key: key);
+  final RefreshController refreshController;
 
   @override
   State<StatefulWidget> createState() {
@@ -92,6 +94,17 @@ class _News extends State<News> {
     setState(() { });
   }
 
+  Future<void> refresh() async {
+    _itemList.clear();
+    await Provider.of<TrendModel>(context, listen: false).updateAllTrendList(context);
+    setState(() { });
+  }
+
+  Future<void> _onRefresh() async {
+    await refresh();
+    widget.refreshController.refreshCompleted();
+  }
+
   final ScrollController _scrollController = ScrollController();
   final List _itemList = [];
   @override
@@ -100,43 +113,51 @@ class _News extends State<News> {
       builder: (context, model, child) {
         _idList = model.trendIDList;
 
-        return ListView.separated(
-          controller: _scrollController,
-          itemBuilder: (context, index) {
-            if (index == _itemList.length) {
-              // 当前已加载全部的动态
-              if (index == _idList.length) {
-                return Container(
-                  padding: const EdgeInsets.all(16.0),
-                  alignment: Alignment.center,
-                  child: const Text('我是有底线的!!!', style: TextStyle(color: Colors.green), ),
-                );
+        return SmartRefresher(
+          enablePullDown: true,
+          enablePullUp: false,
+          header: const WaterDropHeader(),
+          controller: widget.refreshController,
+          onRefresh: _onRefresh,
+          child: ListView.separated(
+            controller: _scrollController,
+            itemBuilder: (context, index) {
+              if (index == _itemList.length) {
+                // 当前已加载全部的动态
+                if (index == _idList.length) {
+                  return Container(
+                    padding: const EdgeInsets.all(16.0),
+                    alignment: Alignment.center,
+                    child: const Text('我是有底线的!!!', style: TextStyle(color: Colors.green), ),
+                  );
+                }
+                else {
+                  // 未加载完，需要获取现在还没有加载的动态，并显示一个正在加载的图标
+                  Future(() => loadTrend(index));
+                  return Container(
+                    padding: const EdgeInsets.all(16.0),
+                    alignment: Alignment.center,
+                    child: const SizedBox(
+                      width: 24.0,
+                      height: 24.0,
+                      child: CircularProgressIndicator(strokeWidth: 2.0,),
+                    ),
+                  );
+                }
               }
               else {
-                // 未加载完，需要获取现在还没有加载的动态，并显示一个正在加载的图标
-                Future(() => loadTrend(index));
-                return Container(
-                  padding: const EdgeInsets.all(16.0),
-                  alignment: Alignment.center,
-                  child: const SizedBox(
-                    width: 24.0,
-                    height: 24.0,
-                    child: CircularProgressIndicator(strokeWidth: 2.0,),
-                  ),
-                );
+                // 当前不是最后一条
+                return _itemList[index];
               }
-            }
-            else {
-              // 当前不是最后一条
-              return _itemList[index];
-            }
-          },
-          separatorBuilder: (context, index) {
-            return const Divider();
-          },
-          itemCount: _itemList.length + 1,
+            },
+            separatorBuilder: (context, index) {
+              return const Divider();
+            },
+            itemCount: _itemList.length + 1,
+          ),
         );
       },
     );
   }
 }
+

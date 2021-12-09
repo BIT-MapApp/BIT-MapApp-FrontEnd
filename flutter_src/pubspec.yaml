@@ -38,6 +38,7 @@ dependencies:
   image_gallery_saver: ^1.2.2 #图片保存到本地
   photo_view: ^0.13.0
   permission_handler: ^8.3.0 #申请储存权限插件
+  pull_to_refresh: ^2.0.0
   flutter:
     sdk: flutter
 

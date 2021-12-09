@@ -11,6 +11,7 @@ import 'package:flutter_baidu_mapapi_map/flutter_baidu_mapapi_map.dart';
 import 'package:flutter_baidu_mapapi_base/flutter_baidu_mapapi_base.dart';
 import 'package:flutter_baidu_mapapi_search/flutter_baidu_mapapi_search.dart';
 import 'package:provider/provider.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 import 'pages/debug_page.dart';
 import 'pages/login_page.dart';
@@ -85,13 +86,15 @@ class _Pages extends State<Pages> {
     super.initState();
   }
 
+  final RefreshController _refreshController = RefreshController(initialRefresh: true);
+
   Widget _getUI() {
     // 获得当前选中的面板
     switch (_selectedItem) {
       case 0:
         return const MapUI();
       case 1:
-        return const News();
+        return News(refreshController: _refreshController,);
       case 2:
         return const UserPage();
       case 3:
@@ -121,7 +124,12 @@ class _Pages extends State<Pages> {
             });
           }
           else {
-            Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) { return const PostTrendPage(); }));
+            Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) { return PostTrendPage(onPost: () {
+              setState(() {
+                _selectedItem = 1;
+              });
+              _refreshController.requestRefresh();
+            }); }));
           }
         },
         child: const Icon(Icons.camera),
