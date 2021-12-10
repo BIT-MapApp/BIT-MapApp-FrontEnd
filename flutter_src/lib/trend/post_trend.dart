@@ -1,9 +1,7 @@
 import 'dart:convert';
-import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:dio/dio.dart';
-import 'package:path/path.dart' as path;
 import 'package:http/http.dart' as http;
 import 'package:flutter_src/model/sites_model.dart';
 import 'package:flutter_src/model/user_model.dart';
@@ -81,10 +79,6 @@ class _PostTrendPageState extends State<PostTrendPage> {
 
               // 创建动态成功，下面需要把图片上传到服务器
               // 如果上传成功，则动态发表成功，否则删除动态
-              var status = await Permission.storage.status;
-              for (int time = 0; time < 5 && !status.isGranted; time++) {
-                Permission.storage.request();
-              }
               Map<String, dynamic> imageMap = {};
               for (int i = 0; i < images.length; i++) {
                 var key = id.toString() + "pic" + (i + 1).toString();

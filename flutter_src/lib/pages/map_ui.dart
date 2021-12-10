@@ -7,8 +7,10 @@ import 'package:flutter_src/model/sites_model.dart';
 import 'package:flutter_src/site_bar.dart';
 import 'package:flutter_src/utils.dart';
 import 'package:provider/provider.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 import '../global.dart';
+import 'news.dart';
 
 class MapUI extends StatefulWidget {
   const MapUI({Key? key}) : super(key: key);
@@ -29,7 +31,20 @@ class _mapUI extends State<MapUI> {
     super.initState();
   }
 
+  // 北理的中心点坐标
   final posCenter = BMFCoordinate(39.73731978267623, 116.17906429806739);
+  final RefreshController _refreshController = RefreshController();
+
+  Widget getSitePage(BuildContext context, int id) {
+    var sites = Provider.of<SitesModel>(context, listen: false);
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(sites.getSiteName(id)),
+        backgroundColor: Theme.of(context).primaryColor,
+      ),
+      body: News(refreshController: _refreshController, location: sites.getSiteName(id),),
+    );
+  }
 
   /// 创建完成回调
   void onBMFMapCreated(BMFMapController controller) {
@@ -44,9 +59,12 @@ class _mapUI extends State<MapUI> {
           for (var index in provider.SitesId) {
             var pos = provider.getCoordinate(index);
             var text = provider.getSiteName(index);
-            mapController?.addMarker(BMFMarker( position: pos,
+            var marker = BMFMarker( position: pos,
                 icon: "assets/pin.png", scaleX: 0.5, scaleY: 0.5,
-                title: text));
+                title: text);
+            mapController?.addMarker(marker);
+            // 貌似直接在声明里面的title是无效的，垃圾百度地图API
+            marker.updateTitle(index.toString());
             mapController?.addText(BMFText(position: pos,
               text: text,
               fontColor: Colors.blueGrey,
@@ -61,6 +79,7 @@ class _mapUI extends State<MapUI> {
       });
     });
 
+    // 这里都是一些调试信息的输出
     mapController?.setMapOnClickedMapPoiCallback(callback: (poi) {
       var text = poi.text ?? "";
       print("clicked " +
@@ -76,6 +95,14 @@ class _mapUI extends State<MapUI> {
           " , longitude= " +
           coordinate.longitude.toString());
     });
+
+    // 点击地图上的marker会弹出对应的页面
+    mapController?.setMapClickedMarkerCallback(
+        callback: (BMFMarker marker) {
+          print("clicked on marker #" + marker.title!);
+          var id = int.parse(marker.title!);
+          Navigator.of(context).push(MaterialPageRoute(builder: (context) => getSitePage(context, id)));
+        });
   }
 
   /// 设置地图参数
@@ -109,6 +136,7 @@ class _mapUI extends State<MapUI> {
       child: Flex(
         direction: Axis.vertical,
         children: [
+          // 上方的地点列表
           Expanded(
             flex: 7,
             child: Center(

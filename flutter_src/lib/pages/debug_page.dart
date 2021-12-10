@@ -9,6 +9,7 @@ class DebugPage extends StatefulWidget {
   _DebugPageState createState() => _DebugPageState();
 }
 
+// 这是单纯用来放脏ui的调试页面
 class _DebugPageState extends State<DebugPage> {
   List<String> items = ["1", "2", "3", "4", "5", "6", "7", "8"];
   RefreshController _refreshController = RefreshController(initialRefresh: false);

@@ -6,6 +6,8 @@ import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
 
 import 'global.dart';
+import 'model/trend_model.dart';
+import 'model/user_model.dart';
 
 Widget getNicknameTextWidget(name) =>
     Text( name,
@@ -40,7 +42,6 @@ Widget getAvatar(ImageProvider avatar, double size) {
 
 class WebError extends Notification {
   final String msg;
-
   WebError(this.msg);
 }
 
@@ -63,15 +64,76 @@ Future<Response> postResponseFromServer(BuildContext context, String route, Map<
   return ret;
 }
 
-Widget getVoteWidget(int cnt, bool voted) {
-  return Row(
-    children: [
-      Icon(voted ? Icons.favorite : Icons.favorite_border, color: voted ? Colors.red : Colors.grey,),
-      const SizedBox(width: 3,),
-      Text(cnt.toString()),
-    ],
-  );
+class VoteWidgetController {
+  VoidCallback? _callback;
+  bool _voteStatus = false;
+  int _voteCnt = 0;
+  int get voteCnt => _voteCnt;
+
+  set voteCnt(val) {
+    _voteCnt = val;
+    if (_callback != null) _callback!();
+  }
+
+  bool get voteStatus => _voteStatus;
+  set onUpdate (val) {
+    _callback = val;
+  }
+
+  set voteStatus (val) {
+    _voteStatus = val;
+    if (_callback != null) _callback!();
+  }
+
 }
+
+class VoteWidget extends StatefulWidget {
+  final int trendId;
+  final int voteCount;
+  final VoteWidgetController controller;
+  final GestureTapCallback? onTap;
+  const VoteWidget({Key? key, required this.trendId, required this.voteCount, this.onTap, required this.controller}) : super(key: key);
+
+  @override
+  _VoteWidgetState createState() => _VoteWidgetState();
+}
+
+class _VoteWidgetState extends State<VoteWidget> {
+
+  bool voted = false;
+  int _voteCnt = 0;
+
+  void _onUpdate() {
+    setState(() {
+      voted = widget.controller.voteStatus;
+      _voteCnt = widget.controller.voteCnt;
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    widget.controller.onUpdate = _onUpdate;
+    widget.controller.voteCnt = widget.voteCount;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: widget.onTap,
+      child: Row(
+        children: [
+          Icon(voted ? Icons.favorite : Icons.favorite_border, color: voted ? Colors.red : Colors.grey,),
+          const SizedBox(width: 3,),
+          Text(_voteCnt.toString()),
+        ],
+      ),
+    );
+  }
+}
+
+
+
 
 Widget getCommentWidget(int cnt, VoidCallback onTapComment) {
   return GestureDetector(

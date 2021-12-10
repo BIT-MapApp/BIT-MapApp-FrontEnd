@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_src/utils.dart';
 
+// 注册页
 class RegisterPage extends StatefulWidget {
   const RegisterPage({Key? key}) : super(key: key);
 
@@ -128,6 +129,7 @@ class _RegisterFormState extends State<RegisterForm> {
             },
           ),
           const SizedBox(height: 8),
+          // 邮箱登录没做完，砍！
           // TextFormField(
           //   controller: _email,
           //   decoration: InputDecoration(
