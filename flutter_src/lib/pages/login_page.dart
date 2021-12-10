@@ -2,13 +2,14 @@ import 'dart:convert';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_src/register_page.dart';
+import 'package:flutter_src/pages/register_page.dart';
 import 'package:flutter_src/utils.dart';
 import 'package:provider/provider.dart';
 
-import 'global.dart';
-import 'model/user_model.dart';
+import '../global.dart';
+import '../model/user_model.dart';
 
+// 登录页
 class LoginForm extends StatefulWidget {
   const LoginForm({Key? key}) : super(key: key);
 
@@ -20,6 +21,7 @@ class _LoginFormState extends State<LoginForm> {
   bool _showPassword = false;
   final GlobalKey _formKey = GlobalKey<FormState>();
 
+  // 用户名和密码的输入控制器
   final TextEditingController _usernameField = TextEditingController();
   final TextEditingController _pwdField = TextEditingController();
 
@@ -28,6 +30,8 @@ class _LoginFormState extends State<LoginForm> {
 
   @override
   void initState() {
+    // 这里暂时没有用，是计划用来添加记忆登录的
+    // 虽然根据YAGNI原则应该删掉，但是明天就要交活了就懒得改了
     var provider = Provider.of<Global>(context, listen: false);
     if (provider.lastLogin != null) {
       _usernameField.text = provider.lastLogin!;
@@ -62,6 +66,7 @@ class _LoginFormState extends State<LoginForm> {
                         _showPassword = !_showPassword;
                       });
                     },
+                    // 显示密码
                     icon: Icon(_showPassword
                         ? Icons.visibility_off
                         : Icons.visibility))),
@@ -72,6 +77,7 @@ class _LoginFormState extends State<LoginForm> {
           ),
           TextButton(
             onPressed: () {
+              // 跳转到注册界面
               Navigator.of(context).push(
                   MaterialPageRoute(builder: (context) {
                     return const RegisterPage();
@@ -115,6 +121,7 @@ class _LoginFormState extends State<LoginForm> {
       });
       var result = json.decode(loginResponse)["result"];
       ScaffoldMessenger.of(context).hideCurrentSnackBar();
+      // 如果登录成功，弹出提示
       if (result == "success") {
         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
           content: Text("登录成功!"),
@@ -122,6 +129,7 @@ class _LoginFormState extends State<LoginForm> {
         Provider.of<UserModel>(context, listen: false).setUsername(context, _usernameField.text);
       }
       else {
+        // 其实这里这么写不太负责，不过后端也没有给具体会导致fail的原因
         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
           content: Text("用户名或密码错误"),
         ));

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:photo_view/photo_view_gallery.dart';
 
-
+// 显示一个全屏image，这个FullscreenPage是从csdn上扒的
 class ImageFullscreenPage extends StatefulWidget {
   final List<ImageProvider> imageList;
   final int index;

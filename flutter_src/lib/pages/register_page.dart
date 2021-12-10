@@ -1,5 +1,9 @@
-import 'package:flutter/material.dart';
+import 'dart:convert';
 
+import 'package:flutter/material.dart';
+import 'package:flutter_src/utils.dart';
+
+// 注册页
 class RegisterPage extends StatefulWidget {
   const RegisterPage({Key? key}) : super(key: key);
 
@@ -125,6 +129,7 @@ class _RegisterFormState extends State<RegisterForm> {
             },
           ),
           const SizedBox(height: 8),
+          // 邮箱登录没做完，砍！
           // TextFormField(
           //   controller: _email,
           //   decoration: InputDecoration(
@@ -164,6 +169,22 @@ class _RegisterFormState extends State<RegisterForm> {
               ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                 content: Text("正在尝试注册..."),
               ));
+              Future(() async {
+                var resp = await postResponseFromServer(context, "register", {
+                  "user": _username.text,
+                  "nickname": _nickname.text,
+                  "password": _pass.text,
+                });
+                var jmap = json.decode(resp.data);
+                ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                if (jmap["result"] == "success") {
+                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar( content: Text("注册成功！"), ));
+                  Navigator.of(context).pop();
+                }
+                else {
+                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar( content: Text("用户名已使用"), ));
+                }
+              });
             },
             child: const Text("验证注册"),
           )

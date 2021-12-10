@@ -1,9 +1,7 @@
 import 'dart:convert';
-import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:dio/dio.dart';
-import 'package:path/path.dart' as path;
 import 'package:http/http.dart' as http;
 import 'package:flutter_src/model/sites_model.dart';
 import 'package:flutter_src/model/user_model.dart';
@@ -20,7 +18,9 @@ import 'package:provider/provider.dart';
 import '../global.dart';
 
 class PostTrendPage extends StatefulWidget {
-  const PostTrendPage({Key? key}) : super(key: key);
+  const PostTrendPage({Key? key, required this.onPost}) : super(key: key);
+  final VoidCallback onPost;
+
 
   @override
   _PostTrendPageState createState() => _PostTrendPageState();
@@ -79,16 +79,10 @@ class _PostTrendPageState extends State<PostTrendPage> {
 
               // 创建动态成功，下面需要把图片上传到服务器
               // 如果上传成功，则动态发表成功，否则删除动态
-              var status = await Permission.storage.status;
-              for (int time = 0; time < 5 && !status.isGranted; time++) {
-                Permission.storage.request();
-              }
-              var f = File(imagePaths[0]);
               Map<String, dynamic> imageMap = {};
               for (int i = 0; i < images.length; i++) {
                 var key = id.toString() + "pic" + (i + 1).toString();
                 imageMap[key] = MultipartFile.fromBytes(images[i].toList());
-                // imageMap[key] = MultipartFile.fromFile(path.dirname(imagePaths[i]), filename: path.split(imagePaths[i]).last);
               }
               var provider = Provider.of<Global>(context, listen: false);
               String url = provider.url + "addpic";
@@ -100,8 +94,6 @@ class _PostTrendPageState extends State<PostTrendPage> {
               }
               http.StreamedResponse httpResponse = await request.send();
               jmap = json.decode(await httpResponse.stream.transform(const Utf8Decoder()).join());
-
-              print(jmap.toString());
 
               if (jmap.containsKey("result") && jmap["result"] == "fail") {
                 ScaffoldMessenger.of(context).hideCurrentSnackBar();
@@ -116,6 +108,7 @@ class _PostTrendPageState extends State<PostTrendPage> {
               ScaffoldMessenger.of(context).hideCurrentSnackBar();
               ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("发送成功")));
               Navigator.of(context).pop();
+              widget.onPost();
             });
 
           }, icon: const Icon(Icons.check)),
